@@ -159,6 +159,10 @@ on the [releases page](https://github.com/AndreiVladescu/Deco-X55-OpenWrt/releas
 your flash, boot the initramfs image from U-Boot over TFTP, then `sysupgrade -n` with the sysupgrade
 image. The default password is `deco-modded`.
 
+There is also a script, `tools/deco_flash.py`, that does the backup and the installation in one go
+from Linux or Windows: you start it, power on the Deco, and it handles U-Boot, the backup, TFTP and
+`sysupgrade`. I haven't run it on a real unit yet, only against a simulated one.
+
 The source (device patch, packages, tools) is in the
 [repository](https://github.com/AndreiVladescu/Deco-X55-OpenWrt), and the full notes from the port,
 including the dead ends, are in [docs/JOURNAL.md](https://github.com/AndreiVladescu/Deco-X55-OpenWrt/blob/main/docs/JOURNAL.md).

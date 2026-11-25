@@ -24,18 +24,51 @@
 ## What you need
 
 * A 3.3 V USB-UART adapter (**GND, TX, RX only — never VCC**) and the case opened; UART is 115200 8N1.
-* A PC with a TFTP server and an Ethernet cable into one of the Deco's **LAN** sockets
+* A PC with an Ethernet cable into one of the Deco's **LAN** sockets (and, for the manual steps, a
+  TFTP server)
   (the OEM U-Boot only talks to the switch ports, not to the WAN socket).
 * The two images from the [latest release](https://github.com/AndreiVladescu/Deco-X55-OpenWrt/releases/latest)
   (check them against `SHA256SUMS`):
   `…-tplink_deco-x55-v3-initramfs-kernel.bin` and `…-tplink_deco-x55-v3-squashfs-sysupgrade.bin`.
 
-## 0. Back up your flash first
+## Automatic: `tools/deco_flash.py`
 
-Every unit has its own Wi-Fi calibration and MAC in `factory_data`. This repository's tools make a
-full, hash-verified dump in about a minute (see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) → "Backing up a stock unit"). Keep it.
+One script does the backup and the installation over the serial console and the LAN cable, on
+Linux or Windows. It needs Python 3 and pyserial.
 
-## 1. Boot OpenWrt from RAM (nothing is written)
+> **Not yet run on a real unit.** It is built from the steps below, which were each tested on
+> hardware, and it passes an end-to-end test against a simulated Deco
+> (`tools/test_deco_flash_sim.py`). Until someone confirms it on a Deco, keep the manual steps below
+> at hand.
+
+1. Put `deco_flash.py` (and on Windows `deco_flash.bat`), the two images and `SHA256SUMS` in one folder.
+2. Give the PC's Ethernet adapter the static address `192.168.1.2/24` and connect it to a **LAN**
+   socket of the Deco. Allow UDP 69 (TFTP) and TCP 8000 (HTTP) from the Deco in the PC's firewall.
+3. Connect the USB-UART adapter, leave the Deco **powered off**, and run:
+   * Linux: `python3 deco_flash.py --port /dev/ttyUSB0`
+     (UDP port 69 needs root; either run it with `sudo`, or allow it once with
+     `sudo sysctl net.ipv4.ip_unprivileged_port_start=69`; the serial port needs the `dialout` group)
+   * Windows: double-click `deco_flash.bat`, or `py deco_flash.py --port COM5`
+4. Power the Deco on when the script asks. It then:
+   * stops U-Boot and boots the **stock** kernel from RAM with a backup script, downloads all eight
+     flash partitions, and checks them against SHA-256 sums the Deco computes itself and against
+     the whole-flash dump (`deco-backup-<date>/`, about 250 MB: **keep it**);
+   * reboots, TFTP-boots the OpenWrt initramfs, has it fetch the sysupgrade image from the PC,
+     checks it and runs `sysupgrade -n`;
+   * waits for OpenWrt to boot from flash and checks that it did.
+
+`--backup-only` only makes the backup, `--no-backup` skips it, `--help` lists the rest. The whole
+console output goes to `deco_flash_console.log`.
+
+## Manual installation
+
+### 0. Back up your flash first
+
+Every unit has its own Wi-Fi calibration and MAC in `factory_data`. `deco_flash.py --backup-only`
+makes a full, hash-verified dump in about a minute and installs nothing. The steps it runs are
+described in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) → "Backing up a stock unit". Keep the backup.
+
+### 1. Boot OpenWrt from RAM (nothing is written)
 
 Power on and press **Ctrl-C** when U-Boot says `press ctrl-c or t to go to uboot cmdline`. Then:
 
@@ -48,7 +81,7 @@ MT7981> bootm 0x50000000#config-X50_3_0_0
 
 Do **not** run `saveenv`. Never press Enter on an empty U-Boot line (it repeats the last command).
 
-## 2. Install
+### 2. Install
 
 The RAM system is at `192.168.1.1` (user `root`, password `deco-modded`). Copy the sysupgrade image and flash it:
 

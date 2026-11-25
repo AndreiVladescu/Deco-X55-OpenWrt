@@ -6,6 +6,8 @@ the test network was `192.168.0.0/24`, with the PC at `192.168.0.105` and the De
 
 | tool | what it does |
 |---|---|
+| `deco_flash.py`, `deco_flash.bat` | **backup + install in one go** over the serial console and LAN (Linux/Windows); see INSTALL.md. Not yet run on a real unit |
+| `test_deco_flash_sim.py` | end-to-end test of `deco_flash.py` against a simulated Deco on a pseudo-terminal (Linux) |
 | `setup_openwrt.sh` | clone OpenWrt at the tested commit, apply the device patch and package patches, add `packages/` as a feed, load the build config |
 | `serial_daemon.py` | keeps the serial console open, logs every byte, stops each boot at the U-Boot prompt (unless `/tmp/deco_nocatch` exists), XMODEM sender. Serial port: `$DECO_TTY`, else the first FTDI adapter in `/dev/serial/by-id/` |
 | `con.py` | client for the daemon: run a shell or U-Boot command, wait for its output |
