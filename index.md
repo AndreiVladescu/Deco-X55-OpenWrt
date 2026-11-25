@@ -1,4 +1,5 @@
 <link  rel="shortcut icon"  type="image/x-icon"  href="icon.ico">
+<style>td { vertical-align: middle; }</style>
 <figure>  <img
 src="./img/bench_green_led.jpg"
 alt="Deco X55 v3 on the bench, running OpenWrt"
