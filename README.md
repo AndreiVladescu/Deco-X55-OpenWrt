@@ -7,8 +7,8 @@ approval in LuCI, roaming between units.
 It is a hobby project. It works on the two units it was developed on; read the
 [install guide](INSTALL.md) and the limitations below before you open yours.
 
-📄 **[Read the writeup (with photos) →](https://andreivladescu.github.io/Deco-X55-OpenWrt/)** ·
-⬇️ **[Download the latest release →](https://github.com/AndreiVladescu/Deco-X55-OpenWrt/releases/latest)**
+Writeup with photos: <https://andreivladescu.github.io/Deco-X55-OpenWrt/>.
+Images: [releases page](https://github.com/AndreiVladescu/Deco-X55-OpenWrt/releases).
 
 ![An opened Deco X55 v3 on the bench, LED solid green](img/bench_green_led.jpg)
 
@@ -142,7 +142,7 @@ Images end up in `openwrt/bin/targets/mediatek/filogic/`. Prebuilt images are on
 | [`tools/`](tools) | serial/U-Boot helpers, flash backup, RAM-boot test loop, soak test |
 | [`INSTALL.md`](INSTALL.md) | installation guide |
 | [`docs/JOURNAL.md`](docs/JOURNAL.md) | how the port was done, including everything that went wrong |
-| [`index.md`](index.md), `img/`, `js/` | the GitHub Pages writeup and photos |
+| [`index.md`](index.md), `img/` | the GitHub Pages writeup and photos |
 | [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) | development and test setup |
 
 ## Thanks
