@@ -76,7 +76,15 @@ serial console to boot OpenWrt from RAM; every later upgrade is done from OpenWr
 
 ## Installing
 
-Short version — the full, careful version with the reasons for each step is in [INSTALL.md](INSTALL.md):
+You need a **3.3 V USB-to-UART adapter** to flash it (GND, TX and RX only, never the 3.3 V pin).
+
+I added a script that installs it: [`tools/deco_flash.py`](tools/deco_flash.py) (Linux and Windows;
+on Windows double-click `deco_flash.bat`). Start it with the Deco powered off, power the Deco on, and it
+makes a full flash backup, loads OpenWrt over the LAN and installs it. It has only been tested against a
+simulated Deco so far; see [INSTALL.md](INSTALL.md) for the setup it needs.
+
+The manual way, short version (the full, careful version with the reasons for each step is in
+[INSTALL.md](INSTALL.md)):
 
 1. Open the case, connect a 3.3 V UART adapter (GND/TX/RX only), make a full flash backup.
 2. Stop TP-Link's U-Boot, TFTP-boot the `initramfs-kernel.bin` image into RAM.

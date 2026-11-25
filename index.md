@@ -153,15 +153,18 @@ Not done yet:
 
 # Installing
 
-Installing requires opening the case and a 3.3 V USB-UART adapter. The steps are in
-[INSTALL.md](https://github.com/AndreiVladescu/Deco-X55-OpenWrt/blob/main/INSTALL.md), and the images are
-on the [releases page](https://github.com/AndreiVladescu/Deco-X55-OpenWrt/releases). In short: back up
-your flash, boot the initramfs image from U-Boot over TFTP, then `sysupgrade -n` with the sysupgrade
-image. The default password is `deco-modded`.
+To flash it you need a **3.3 V USB-to-UART adapter** (connect only GND, TX and RX, never the 3.3 V pin),
+an Ethernet cable, and the case opened. TP-Link's own update page won't accept the image, so the serial
+console is the only way in.
 
-There is also a script, `tools/deco_flash.py`, that does the backup and the installation in one go
-from Linux or Windows: you start it, power on the Deco, and it handles U-Boot, the backup, TFTP and
-`sysupgrade`. I haven't run it on a real unit yet, only against a simulated one.
+I added a script that installs it, `tools/deco_flash.py`. It runs on Linux and Windows: you start it
+with the Deco powered off, plug the Deco in, and it stops U-Boot, makes a full backup of the flash, loads
+OpenWrt over the network and writes it with `sysupgrade`. I've tested it against a simulated Deco so
+far, not yet on a real unit. The images are on the
+[releases page](https://github.com/AndreiVladescu/Deco-X55-OpenWrt/releases), and the manual steps
+are in [INSTALL.md](https://github.com/AndreiVladescu/Deco-X55-OpenWrt/blob/main/INSTALL.md): back
+up your flash, boot the initramfs image from U-Boot over TFTP, then `sysupgrade -n` with the
+sysupgrade image. The default password is `deco-modded`.
 
 The source (device patch, packages, tools) is in the
 [repository](https://github.com/AndreiVladescu/Deco-X55-OpenWrt), and the full notes from the port,
