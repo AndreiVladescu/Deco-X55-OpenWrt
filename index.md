@@ -7,14 +7,15 @@ alt="Deco X55 v3 on the bench, running OpenWrt"
 
 # Introduction
 
-The TP-Link Deco X55 is an AX3000 mesh router sold in packs of two or three. I have two of them, and while
-they work fine, the stock firmware is closed: setup goes through a phone app and a TP-Link account, there is
-no shell, and there's no way to add a VPN server or anything else. OpenWrt would fix that, but there was no port for
-the **v3** hardware revision, which is MediaTek-based (the older v1.x units use a Qualcomm chip and
-have nothing in common with it).
+The TP-Link Deco X55 is an AX3000 mesh router sold in packs of two or three. I bought the two-pack, and while
+they work fine, the stock firmware is locked by Tp-Link, setup goes through a phone app, a TP-Link account and there is
+no shell. OpenWrt would fix that, but there was no port for the **v3** hardware revision,
+ which is MediaTek-based (the older v1.x units use a Qualcomm chip and
+have nothing in common with it). I found some online resources: [forum.openwrt.org](https://forum.openwrt.org/t/openwrt-for-tp-link-deco-x55/242148/33) but
+my hardware is a bit different from theirs and they didn't put up a build to try for myself.
 
 So I opened both units and tried to port it, with the goal of keeping what the Decos do well: one
-network across both units, a fast wireless link between them, and roaming between them.
+network across both units, a fast wireless link between them, and roaming between them. These units are *EU/3.0* versions, make sure you get these specific versions.
 
 <img  src="./img/core_antennas.jpg"  width="60%">
 
@@ -28,9 +29,6 @@ between two metal heatsink plates.
   <img src="./img/teardown_top.jpg" width="50%" style="margin-right: 50px;">
   <img src="./img/teardown_bottom.jpg" width="50%">
 </div>
-
-With the heatsinks off, the top side has a stamped shield frame over the interesting parts. The
-shield lids were already off in these photos.
 
 <div style="display: flex; flex-direction: row; align-items: center;">
   <img src="./img/board_heatspreader.jpg" width="50%" style="margin-right: 50px;">
@@ -48,6 +46,8 @@ shield lids were already off in these photos.
 The board also has a single RGB LED, the reset button, and a 4-pin UART header (3.3 V, 115200 baud),
 which is how I got in.
 
+Pins are TX/RX/GND/3V3:
+
 <div style="display: flex; flex-direction: row; align-items: center;">
   <img src="./img/uart_probes.jpg" width="40%" style="margin-right: 50px;">
   <img src="./img/bench_logic_analyzer.jpg" width="55%">
@@ -58,6 +58,8 @@ which is how I got in.
 
 Before writing anything, I wanted a full copy of the flash of both units. This took longer than the
 port itself.
+
+UART on the unit fully booted doesn't accept any input, only outputs data.
 
 TP-Link's U-Boot can be interrupted with Ctrl-C, but it can only download files, not upload them. The only
 way out was printing the flash as hex on the serial console, which at 115200 baud would take about 13 hours
@@ -140,7 +142,7 @@ Measured on my two units:
 - the link between the units runs at 2401.9 Mbit/s (160 MHz, 2 streams), around 450–650 Mbit/s in iperf3
 - routing between WAN and LAN uses the hardware offload, with the CPU mostly idle at 350 Mbit/s
 - with a cable between the units, pulling it switches over to Wi-Fi in about 7 seconds
-- a first 1.4-hour stability test had no reboots and no memory growth
+- a first 1.5-hour stability test had no reboots and no memory growth
 
 Not done yet:
 
