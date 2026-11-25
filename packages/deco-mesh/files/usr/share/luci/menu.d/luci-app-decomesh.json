@@ -1,0 +1,8 @@
+{
+	"admin/network/decomesh": {
+		"title": "Mesh nodes",
+		"order": 60,
+		"action": { "type": "view", "path": "decomesh/nodes" },
+		"depends": { "acl": [ "luci-app-decomesh" ] }
+	}
+}

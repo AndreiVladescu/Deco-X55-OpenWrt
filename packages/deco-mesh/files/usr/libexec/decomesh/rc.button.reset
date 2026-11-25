@@ -1,0 +1,32 @@
+#!/bin/sh
+# Deco X55 reset button (decomesh):
+#   short press (< 2 s)  -> mesh pairing (registrar on a meshed node, join on a new node)
+#   hold 4-9 s           -> reboot
+#   hold >= 10 s         -> factory reset  (LED turns red while held past 10 s)
+. /lib/functions.sh
+OVERLAY="$( grep ' /overlay ' /proc/mounts )"
+case "$ACTION" in
+pressed)
+	return 10
+;;
+timeout)
+	# held for 10 s: signal "release now = factory reset"
+	for c in green blue; do echo 0 > /sys/class/leds/$c:status/brightness 2>/dev/null; done
+	echo none > /sys/class/leds/red:status/trigger 2>/dev/null
+	echo 1 > /sys/class/leds/red:status/brightness 2>/dev/null
+;;
+released)
+	if [ "$SEEN" -lt 2 ]; then
+		/usr/sbin/decomesh pair >/dev/null 2>&1 &
+	elif [ "$SEEN" -ge 10 ] && [ -n "$OVERLAY" ]; then
+		echo "FACTORY RESET" > /dev/console
+		factoryreset -y && reboot &
+	elif [ "$SEEN" -ge 4 ]; then
+		echo "REBOOT" > /dev/console
+		sync; reboot
+	else
+		/usr/sbin/decomesh led-idle
+	fi
+;;
+esac
+return 0

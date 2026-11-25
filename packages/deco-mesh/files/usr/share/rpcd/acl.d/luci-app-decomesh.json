@@ -1,0 +1,7 @@
+{
+	"luci-app-decomesh": {
+		"description": "Grant access to Deco mesh pairing",
+		"read": { "ubus": { "decomesh": [ "status" ] } },
+		"write": { "ubus": { "decomesh": [ "start_pairing", "stop_pairing", "approve", "reject", "leave", "create", "join" ] } }
+	}
+}

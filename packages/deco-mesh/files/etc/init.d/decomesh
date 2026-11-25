@@ -1,0 +1,7 @@
+#!/bin/sh /etc/rc.common
+# clean up a pairing window left over from before a reboot, set the idle LED
+START=99
+start() {
+	if uci -q get wireless.dmpair >/dev/null; then /usr/sbin/decomesh registrar-stop; fi
+	/usr/sbin/decomesh led-idle
+}

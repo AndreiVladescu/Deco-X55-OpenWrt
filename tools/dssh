@@ -1,0 +1,5 @@
+#!/bin/sh
+# ssh into a Deco under test. Community builds have the default root password "deco-modded"
+# (override with DECO_PW); host keys change with every install, so they are not pinned.
+O="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 -o LogLevel=ERROR -o PubkeyAuthentication=no"
+exec sshpass -p "${DECO_PW:-deco-modded}" ssh $O root@${DECO_IP:-192.168.0.250} "$@"

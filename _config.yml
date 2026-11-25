@@ -1,0 +1,12 @@
+title: Deco X55 v3 OpenWrt
+remote_theme: pages-themes/slate@v0.2.0
+description: OpenWrt on the TP-Link Deco X55 v3 (MT7981B), with a Deco-style mesh.
+
+exclude:
+  - "*.bin"
+  - openwrt
+  - openwrt-patches
+  - packages
+  - config
+  - tools
+  - docs/stock-boot-log.txt

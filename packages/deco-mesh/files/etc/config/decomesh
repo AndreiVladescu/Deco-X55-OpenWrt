@@ -1,0 +1,5 @@
+config decomesh 'main'
+	# seconds the WPS pairing window stays open
+	option window '120'
+	# seconds a join request may wait for approval in LuCI
+	option approve_wait '300'

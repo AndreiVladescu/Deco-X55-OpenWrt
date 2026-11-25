@@ -1,0 +1,7 @@
+#!/bin/sh
+# Install the decomesh reset-button handler (short press = pairing, 4-9 s reboot, >=10 s factory
+# reset). /etc/rc.button/reset belongs to base-files, so it is replaced here on first boot.
+cmp -s /usr/libexec/decomesh/rc.button.reset /etc/rc.button/reset || \
+	cp /usr/libexec/decomesh/rc.button.reset /etc/rc.button/reset
+chmod +x /etc/rc.button/reset
+exit 0

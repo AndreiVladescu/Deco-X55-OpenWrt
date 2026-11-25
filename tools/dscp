@@ -1,0 +1,4 @@
+#!/bin/sh
+# scp a file to a Deco under test:  DECO_IP=… tools/dscp <local> <remote-path>
+O="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 -o LogLevel=ERROR -o PubkeyAuthentication=no"
+exec sshpass -p "${DECO_PW:-deco-modded}" scp -O $O "$1" root@${DECO_IP:-192.168.0.250}:"$2"

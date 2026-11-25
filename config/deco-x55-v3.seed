@@ -1,0 +1,35 @@
+CONFIG_TARGET_mediatek=y
+CONFIG_TARGET_mediatek_filogic=y
+CONFIG_TARGET_mediatek_filogic_DEVICE_tplink_deco-x55-v3=y
+CONFIG_TARGET_ROOTFS_INITRAMFS=y
+CONFIG_CCACHE=y
+# --- Deco X55 v3 community build ---
+CONFIG_PACKAGE_deco-x55-defaults=y
+CONFIG_PACKAGE_deco-mesh=y
+# full hostapd/wpa_supplicant: WPA3, 802.11k/v/r, 802.11s mesh, WPS (pairing)
+# CONFIG_PACKAGE_wpad-basic-mbedtls is not set
+CONFIG_PACKAGE_wpad-mbedtls=y
+# mesh + roaming
+CONFIG_PACKAGE_kmod-batman-adv=y
+CONFIG_PACKAGE_batctl-full=y
+CONFIG_PACKAGE_luci-proto-batman-adv=y
+CONFIG_PACKAGE_usteer=y
+CONFIG_PACKAGE_luci-app-usteer=y
+# web UI over HTTPS
+CONFIG_PACKAGE_luci=y
+CONFIG_PACKAGE_luci-ssl=y
+# VPN
+CONFIG_PACKAGE_luci-proto-wireguard=y
+CONFIG_PACKAGE_wireguard-tools=y
+CONFIG_PACKAGE_qrencode=y
+CONFIG_PACKAGE_luci-proto-openvpn=y
+CONFIG_PACKAGE_openvpn-mbedtls=y
+# quality of life
+CONFIG_PACKAGE_luci-app-sqm=y
+CONFIG_PACKAGE_luci-app-upnp=y
+CONFIG_PACKAGE_luci-app-ddns=y
+CONFIG_PACKAGE_luci-app-nlbwmon=y
+CONFIG_PACKAGE_luci-app-wol=y
+CONFIG_PACKAGE_htop=y
+CONFIG_PACKAGE_iperf3=y
+CONFIG_PACKAGE_ethtool=y

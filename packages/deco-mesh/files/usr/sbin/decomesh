@@ -1,0 +1,505 @@
+#!/bin/sh
+# decomesh — push-button pairing for an OpenWrt batman-adv/802.11s mesh (Deco-style onboarding)
+#
+# A node is "configured" when it has a mesh (wireless.mesh0 with a key). Then a button press makes
+# it a REGISTRAR: it opens a WPA2 pairing AP (visible: hostapd refuses WPS on hidden SSIDs) on 2.4 GHz with WPS push-button for a short
+# window, plus a tiny HTTP join service on that link only. An unconfigured node pressing its button
+# becomes a JOINER: it gets the pairing AP's key via WPS-PBC, sends a join request and waits until
+# someone approves it in LuCI on the registrar; then it receives the mesh settings and joins.
+#
+#   decomesh pair              button action: registrar if configured, joiner otherwise
+#   decomesh status            JSON status (used by LuCI/rpcd)
+#   decomesh approve <id> | reject <id>
+#   decomesh registrar-stop | join-stop
+#   decomesh export            print the settings a joiner receives (registrar side)
+#   decomesh apply <file>      apply received settings (joiner side)
+#   decomesh leave             remove the mesh from this node (back to unconfigured)
+
+. /lib/functions.sh
+
+STATE=/tmp/decomesh
+REQ=$STATE/requests
+PAIR_NET=10.234.0
+PAIR_PORT=8099
+PAIR_IF=dmpair0          # registrar's pairing AP interface
+JOIN_IF=dmjoin0          # joiner's temporary client interface
+WINDOW=$(uci -q get decomesh.main.window || echo 120)          # seconds the WPS window is open
+APPROVE_WAIT=$(uci -q get decomesh.main.approve_wait || echo 300) # seconds a request may wait
+
+log() { logger -t decomesh "$*"; echo "$*" >&2; }
+mkdir -p "$REQ"
+
+is_configured() { [ -n "$(uci -q get wireless.mesh0.key)" ]; }
+pair_state() { cat $STATE/state 2>/dev/null || echo idle; }
+set_state() { echo "$1" > $STATE/state; }
+
+# --- status LED: single RGB LED (red/green/blue:status) -------------------------------------------
+led() {   # led <color> <mode: on|off|slow|fast>
+	local c="$1" m="$2" l
+	for l in red green blue; do
+		[ -d /sys/class/leds/$l:status ] || continue
+		echo none > /sys/class/leds/$l:status/trigger
+		echo 0 > /sys/class/leds/$l:status/brightness
+	done
+	l=/sys/class/leds/$c:status
+	[ -d "$l" ] || return 0
+	case "$m" in
+	on) echo 1 > $l/brightness ;;
+	slow|fast)
+		echo timer > $l/trigger
+		[ "$m" = slow ] && { echo 500 > $l/delay_on; echo 500 > $l/delay_off; } \
+		                || { echo 120 > $l/delay_on; echo 120 > $l/delay_off; } ;;
+	esac
+}
+led_idle() { if is_configured; then led green on; else led blue on; fi; }
+
+rand_hex() { head -c 64 /dev/urandom | md5sum | cut -c1-$(( $1 * 2 )); }   # up to 16 bytes
+my_mac() { cat /sys/class/net/br-lan/address 2>/dev/null; }
+model() { cat /tmp/sysinfo/model 2>/dev/null || echo unknown; }
+# BusyBox here has no base64 applet; ucode (always present on OpenWrt) has it built in
+b64() { ucode -e 'print(b64enc(ARGV[0]))' "$1"; }
+unb64() { [ -n "$1" ] && ucode -e 'print(b64dec(ARGV[0]) ?? "")' "$1"; }
+
+# radio carrying the 2.4 GHz band / the 5 GHz band
+radio_of_band() { local r; for r in $(uci show wireless | sed -n "s/^wireless\.\([^.]*\)=wifi-device$/\1/p"); do
+	[ "$(uci -q get wireless.$r.band)" = "$1" ] && { echo $r; return; }; done; }
+
+# ============================================ registrar ===========================================
+
+registrar_start() {
+	is_configured || { log "not configured - cannot be a registrar"; return 1; }
+	[ "$(pair_state)" = registrar ] && { log "pairing window already open"; return 0; }
+	local r2g ssid key
+	r2g=$(radio_of_band 2g)
+	ssid="DecoPair-$(rand_hex 3)"
+	key="$(rand_hex 16)"
+	log "registrar: opening pairing window on $r2g ($ssid) for ${WINDOW}s"
+	uci -q batch <<-UCI
+		set network.dmpair=interface
+		set network.dmpair.proto='static'
+		set network.dmpair.ipaddr='$PAIR_NET.1'
+		set network.dmpair.netmask='255.255.255.0'
+		set wireless.dmpair=wifi-iface
+		set wireless.dmpair.device='$r2g'
+		set wireless.dmpair.mode='ap'
+		set wireless.dmpair.ifname='$PAIR_IF'
+		set wireless.dmpair.ssid='$ssid'
+		set wireless.dmpair.hidden='0'
+		set wireless.dmpair.encryption='psk2+ccmp'
+		set wireless.dmpair.key='$key'
+		set wireless.dmpair.wps_pushbutton='1'
+		set wireless.dmpair.network='dmpair'
+		set dhcp.dmpair=dhcp
+		set dhcp.dmpair.interface='dmpair'
+		set dhcp.dmpair.start='10'
+		set dhcp.dmpair.limit='20'
+		set dhcp.dmpair.leasetime='10m'
+		set dhcp.dmpair.dhcpv4='server'
+		set dhcp.dmpair.force='1'
+		set dhcp.dmpair.ra='disabled'
+		set dhcp.dmpair.dhcpv6='disabled'
+		set firewall.dmpair=zone
+		set firewall.dmpair.name='dmpair'
+		set firewall.dmpair.network='dmpair'
+		set firewall.dmpair.input='REJECT'
+		set firewall.dmpair.output='ACCEPT'
+		set firewall.dmpair.forward='REJECT'
+		set firewall.dmpair_dhcp=rule
+		set firewall.dmpair_dhcp.name='decomesh-pair-dhcp'
+		set firewall.dmpair_dhcp.src='dmpair'
+		set firewall.dmpair_dhcp.proto='udp'
+		set firewall.dmpair_dhcp.dest_port='67'
+		set firewall.dmpair_dhcp.target='ACCEPT'
+		set firewall.dmpair_join=rule
+		set firewall.dmpair_join.name='decomesh-pair-join'
+		set firewall.dmpair_join.src='dmpair'
+		set firewall.dmpair_join.proto='tcp'
+		set firewall.dmpair_join.dest_port='$PAIR_PORT'
+		set firewall.dmpair_join.target='ACCEPT'
+		set uhttpd.decomesh=uhttpd
+		set uhttpd.decomesh.listen_http='$PAIR_NET.1:$PAIR_PORT'
+		set uhttpd.decomesh.home='/usr/share/decomesh/www'
+		set uhttpd.decomesh.cgi_prefix='/cgi-bin'
+		set uhttpd.decomesh.no_dirlists='1'
+		set uhttpd.decomesh.max_requests='5'
+	UCI
+	uci commit network; uci commit wireless; uci commit dhcp; uci commit firewall; uci commit uhttpd
+	rm -f $REQ/*.info $REQ/*.status
+	set_state registrar
+	echo "$(date +%s)" > $STATE/window_start
+	led blue slow
+	/etc/init.d/network reload
+	wifi reload
+	# wait for the pairing AP *and* the dmpair interface: dnsmasq only adds DHCP ranges for
+	# interfaces that are up when it starts, uhttpd can only bind an existing address
+	local t=0
+	while ! ubus -S list "hostapd.$PAIR_IF" >/dev/null 2>&1 || \
+	      [ "$(ifstatus dmpair 2>/dev/null | jsonfilter -e '@.up')" != true ]; do
+		sleep 1; t=$((t+1)); [ $t -gt 40 ] && { log "pairing AP did not come up"; registrar_stop; return 1; }
+	done
+	/etc/init.d/firewall reload >/dev/null 2>&1
+	/etc/init.d/dnsmasq restart >/dev/null 2>&1
+	/etc/init.d/uhttpd reload >/dev/null 2>&1
+	ubus call "hostapd.$PAIR_IF" wps_start >/dev/null 2>&1 && log "registrar: WPS push-button active"
+	# watchdog: close the window when nothing is pending anymore
+	( while :; do
+		sleep 5
+		[ "$(pair_state)" = registrar ] || exit 0
+		now=$(date +%s); start=$(cat $STATE/window_start)
+		pending=$(grep -l pending $REQ/*.status 2>/dev/null | wc -l)
+		approved=$(grep -l approved $REQ/*.status 2>/dev/null | wc -l)   # approved, not yet fetched
+		delivered=$(grep -l delivered $REQ/*.status 2>/dev/null | wc -l)
+		# success: a node got its settings and nobody else is waiting -> close (like Deco)
+		if [ "$delivered" -gt 0 ] && [ "$pending" -eq 0 ] && [ "$approved" -eq 0 ]; then
+			sleep 15; /usr/sbin/decomesh registrar-stop; exit 0
+		fi
+		if [ $((now - start)) -ge "$WINDOW" ] && [ "$pending" -eq 0 ]; then
+			# keep the link up briefly so an approved joiner can fetch its settings
+			[ "$approved" -gt 0 ] && sleep 20
+			/usr/sbin/decomesh registrar-stop; exit 0
+		fi
+		[ $((now - start)) -ge "$APPROVE_WAIT" ] && { /usr/sbin/decomesh registrar-stop; exit 0; }
+	  done ) >/dev/null 2>&1 </dev/null &
+}
+
+registrar_stop() {
+	log "registrar: closing pairing window"
+	ubus call "hostapd.$PAIR_IF" wps_cancel >/dev/null 2>&1
+	for s in network.dmpair wireless.dmpair dhcp.dmpair firewall.dmpair firewall.dmpair_dhcp \
+	         firewall.dmpair_join uhttpd.decomesh; do uci -q delete $s; done
+	uci commit network; uci commit wireless; uci commit dhcp; uci commit firewall; uci commit uhttpd
+	/etc/init.d/uhttpd reload >/dev/null 2>&1
+	/etc/init.d/network reload
+	wifi reload
+	/etc/init.d/firewall reload >/dev/null 2>&1
+	/etc/init.d/dnsmasq restart >/dev/null 2>&1   # reload does not pick up new DHCP ranges
+	# forget requests that never got an answer
+	for f in $REQ/*.status; do [ -e "$f" ] && grep -q pending "$f" && echo expired > "$f"; done
+	set_state idle
+	led_idle
+}
+
+# settings handed to an approved joiner: "name base64(value)" per line, whitelisted on both ends
+export_settings() {
+	local r5 r2 v
+	r5=$(radio_of_band 5g); r2=$(radio_of_band 2g)
+	for v in mesh_id key encryption; do echo "mesh_$v $(b64 "$(uci -q get wireless.mesh0.$v)")"; done
+	for v in channel htmode country; do
+		echo "r5_$v $(b64 "$(uci -q get wireless.$r5.$v)")"
+		echo "r2_$v $(b64 "$(uci -q get wireless.$r2.$v)")"
+	done
+	for i in default_radio0 default_radio1; do
+		for v in ssid encryption key ieee80211w ieee80211k bss_transition ieee80211r disabled; do
+			echo "${i}_$v $(b64 "$(uci -q get wireless.$i.$v)")"
+		done
+	done
+	echo "registrar $(b64 "$(my_mac)")"
+}
+
+# ============================================== joiner ============================================
+
+join_start() {
+	is_configured && { log "already configured - press the button on an unconfigured node"; return 1; }
+	[ "$(pair_state)" = joining ] && return 0
+	set_state joining
+	led blue fast
+	log "joiner: looking for a pairing window (WPS push-button)"
+	( join_run; rc=$?; [ $rc -ne 0 ] && log "joiner: pairing failed ($rc)"; join_cleanup; led_idle ) \
+		>/dev/null 2>&1 </dev/null &
+}
+
+join_cleanup() {
+	ubus call wpa_supplicant config_remove "{\"iface\":\"$JOIN_IF\"}" >/dev/null 2>&1
+	iw dev $JOIN_IF del 2>/dev/null
+	# bring the local 2.4 GHz AP back
+	ubus call network.wireless up "{\"device\":\"$(radio_of_band 2g)\"}" >/dev/null 2>&1
+	[ "$(pair_state)" = joining ] && set_state idle
+}
+
+join_run() {
+	local r2g phy mac nonce id t ans
+	r2g=$(radio_of_band 2g)
+	phy=""
+	for p in /sys/class/ieee80211/*; do
+		iw phy "$(basename "$p")" info 2>/dev/null | grep -q " 2437\.0 MHz" && { phy=$(basename "$p"); break; }
+	done
+	[ -n "$phy" ] || return 2
+	# free the 2.4 GHz radio so the client can follow the registrar's channel
+	ubus call network.wireless down "{\"device\":\"$r2g\"}" >/dev/null 2>&1
+	sleep 2
+	mac="02:$(rand_hex 5 | sed 's/../&:/g; s/:$//')"
+	iw phy "$phy" interface add $JOIN_IF type managed || return 3
+	ip link set $JOIN_IF address "$mac"
+	printf 'update_config=0\n' > $STATE/join.conf
+	ubus call wpa_supplicant config_add \
+		"{\"driver\":\"nl80211\",\"iface\":\"$JOIN_IF\",\"config\":\"$STATE/join.conf\"}" >/dev/null || return 4
+	t=0; while ! ubus -S list "wpa_supplicant.$JOIN_IF" >/dev/null 2>&1; do sleep 1; t=$((t+1)); [ $t -gt 10 ] && return 5; done
+	# WPS push-button: retried for the length of a window
+	t=0
+	while :; do
+		ubus call "wpa_supplicant.$JOIN_IF" wps_start '{"multi_ap":false}' >/dev/null 2>&1
+		i=0
+		while [ $i -lt 20 ]; do
+			sleep 3; i=$((i+1))
+			ubus call "wpa_supplicant.$JOIN_IF" control '{"command":"STATUS"}' 2>/dev/null \
+				| grep -q 'wpa_state=COMPLETED' && break 2
+		done
+		t=$((t+60)); [ $t -ge "$WINDOW" ] && return 6
+	done
+	log "joiner: connected to pairing AP"
+	if ! udhcpc -i $JOIN_IF -q -n -t 5 -T 2 -s /usr/share/decomesh/udhcpc.script >/dev/null 2>&1; then
+		# no DHCP on the pairing link: fall back to a random static address in .100-.199
+		ip addr add "$PAIR_NET.$(( 100 + 0x$(rand_hex 1) % 100 ))/24" dev $JOIN_IF || return 7
+		log "joiner: no DHCP answer, using a static pairing address"
+	fi
+	# (no ping check: the pairing zone only admits DHCP and the join port — the request proves the link)
+	nonce=$(rand_hex 16)
+	ans=$(uclient-fetch -q -T 10 -O - \
+		"http://$PAIR_NET.1:$PAIR_PORT/cgi-bin/join?op=request&mac=$(my_mac)&nonce=$nonce&model=$(model | sed 's/ /%20/g')" 2>/dev/null)
+	id=$(echo "$ans" | sed -n 's/^id=\([0-9a-f]*\)$/\1/p')
+	[ -n "$id" ] || return 8
+	log "joiner: request $id sent, waiting for approval"
+	led blue slow
+	t=0
+	while :; do
+		sleep 3; t=$((t+3)); [ $t -gt "$APPROVE_WAIT" ] && return 9
+		uclient-fetch -q -T 10 -O $STATE/answer \
+			"http://$PAIR_NET.1:$PAIR_PORT/cgi-bin/join?op=status&id=$id&nonce=$nonce" 2>/dev/null || continue
+		case "$(head -1 $STATE/answer)" in
+		approved) break ;;
+		rejected|expired) log "joiner: request $(head -1 $STATE/answer)"; return 10 ;;
+		esac
+	done
+	log "joiner: approved, applying mesh settings"
+	sed 1d $STATE/answer > $STATE/settings
+	join_cleanup
+	apply_settings $STATE/settings
+	set_state idle
+}
+
+# ============================================ mesh config ==========================================
+
+BB_VID=$(uci -q get decomesh.main.backhaul_vlan || echo 42)   # VLAN for batman on Ethernet ports
+
+br_section() { uci show network | sed -n "s/^network\.\([^.]*\)\.name='br-lan'$/\1/p" | head -1; }
+
+# The backhaul VLAN gets its own locally administered MAC (first octet 0x02 | port index << 2).
+# Otherwise batman's BLA announcements, which carry the primary interface's MAC, come back into
+# br-lan as "received packet on bat0 with own address" (one kernel warning per BLA period).
+bb_mac() {   # bb_mac <port>
+	local mac n; mac=$(cat /sys/class/net/$1/address 2>/dev/null) || return 1
+	case "$1" in lan*) n=${1#lan} ;; eth*) n=$((8 + ${1#eth})) ;; *) return 1 ;; esac
+	printf '%02x:%s\n' $(( 0x02 | (n << 2) )) "${mac#*:}"
+}
+
+bb_add() {   # bb_add <port>: batman on VLAN $BB_VID of <port>
+	local p="$1" m; m=$(bb_mac "$p")
+	uci -q batch <<-UCI
+		set network.bbdev_$p=device
+		set network.bbdev_$p.type='8021q'
+		set network.bbdev_$p.ifname='$p'
+		set network.bbdev_$p.vid='$BB_VID'
+		set network.bbdev_$p.name='$p.$BB_VID'
+		set network.bb_$p=interface
+		set network.bb_$p.proto='batadv_hardif'
+		set network.bb_$p.master='bat0'
+		set network.bb_$p.device='$p.$BB_VID'
+	UCI
+	[ -n "$m" ] && uci set network.bbdev_$p.macaddr="$m"
+}
+
+# existing installs: give every backhaul VLAN its own MAC (no reload; used from uci-defaults)
+bb_migrate() {
+	local p
+	for p in $(uci show network | sed -n "s/^network\.bb_\([^.=]*\)=interface$/\1/p"); do
+		uci -q get network.bbdev_$p.macaddr >/dev/null || bb_add "$p"
+	done
+	uci commit network
+}
+
+# batman-adv over 802.11s on the 5 GHz radio, plus wired backhaul on the given Ethernet ports
+# (batman on VLAN $BB_VID of each port; untagged traffic keeps being bridged; BLA prevents loops)
+mesh_configure() {   # mesh_configure <mesh_id> <key> <ports...>
+	local id="$1" key="$2" r5 br p; shift 2
+	r5=$(radio_of_band 5g); br=$(br_section)
+	uci -q batch <<-UCI
+		set network.bat0=interface
+		set network.bat0.proto='batadv'
+		set network.bat0.routing_algo='BATMAN_IV'
+		set network.bat0.bridge_loop_avoidance='1'
+		set network.bat0.distributed_arp_table='1'
+		set network.bat0.multicast_mode='1'
+		set network.mesh=interface
+		set network.mesh.proto='batadv_hardif'
+		set network.mesh.master='bat0'
+		set network.mesh.mtu='1536'
+		set wireless.$r5.disabled='0'
+		set wireless.mesh0=wifi-iface
+		set wireless.mesh0.device='$r5'
+		set wireless.mesh0.mode='mesh'
+		set wireless.mesh0.ifname='mesh0'
+		set wireless.mesh0.mesh_id='$id'
+		set wireless.mesh0.encryption='sae'
+		set wireless.mesh0.key='$key'
+		set wireless.mesh0.mesh_fwding='0'
+		set wireless.mesh0.mesh_rssi_threshold='0'
+		set wireless.mesh0.network='mesh'
+	UCI
+	uci -q del_list "network.$br.ports=bat0"; uci add_list "network.$br.ports=bat0"
+	for p in "$@"; do bb_add "$p"; done
+}
+
+# usteer tuned for a 2-3 node home mesh (tested with a phone walking between two units):
+# roam at -60 dBm when another AP is >= 8 dB better (802.11v transition, kick only as last resort),
+# band steering 2.4 -> 5 GHz after ~20 s. Only options the user hasn't set are touched.
+usteer_tune() {
+	local o v
+	for o in roam_scan_snr=-60 roam_trigger_snr=-60 signal_diff_threshold=8 roam_kick_delay=3000 \
+	         roam_trigger_interval=30000 min_snr=-82 min_connect_snr=-80 assoc_steering=1 \
+	         band_steering_threshold=2 band_steering_interval=10000; do
+		v=${o#*=}; o=${o%%=*}
+		uci -q get usteer.@usteer[0].$o >/dev/null || uci set usteer.@usteer[0].$o="$v"
+	done
+	uci commit usteer
+	/etc/init.d/usteer restart >/dev/null 2>&1
+}
+
+lan_ports() { uci -q get "network.$(br_section).ports" | tr ' ' '\n' | grep -E '^(lan[0-9]+|eth[0-9]+)$'; }
+
+has_uplink() {   # this node has internet on WAN -> it should be the mesh's main unit
+	local dev; dev=$(uci -q get network.wan.device)
+	[ -n "$dev" ] && [ -n "$(ip -4 route show default dev "$dev" 2>/dev/null)" ]
+}
+
+is_satellite() { [ "$(uci -q get network.lan.proto)" = dhcp ] && [ "$(uci -q get dhcp.lan.ignore)" = 1 ]; }
+
+# satellite: the WAN socket becomes a LAN port too (like Deco)
+satellite_wan_to_lan() {
+	local wdev br; wdev=$(uci -q get network.wan.device)
+	[ -n "$wdev" ] || return 0
+	uci set network.wan.disabled='1'; uci -q set network.wan6.disabled='1'
+	br=$(br_section); uci -q del_list "network.$br.ports=$wdev"; uci add_list "network.$br.ports=$wdev"
+}
+
+# add wired backhaul (batman on VLAN $BB_VID) to every Ethernet port of an existing mesh node
+wired_backhaul() {
+	is_configured || { log "not in a mesh"; return 1; }
+	is_satellite && satellite_wan_to_lan
+	local p
+	for p in $(lan_ports); do
+		uci -q get network.bbdev_$p.macaddr >/dev/null && continue
+		bb_add "$p"
+		log "wired backhaul on $p (VLAN $BB_VID)"
+	done
+	uci commit network
+	/etc/init.d/network reload
+}
+
+create_mesh() {
+	is_configured && { log "already in a mesh"; return 0; }
+	local id key
+	id="deco-mesh-$(rand_hex 3)"; key="$(rand_hex 16)"
+	mesh_configure "$id" "$key" $(lan_ports)
+	uci commit network; uci commit wireless
+	usteer_tune
+	log "created mesh '$id' on this node (main unit)"
+	/etc/init.d/network reload; wifi reload
+	led green on
+}
+
+# ================================================ apply ===========================================
+
+apply_settings() {
+	local f="$1" name val r5 r2 br
+	[ -s "$f" ] || return 1
+	r5=$(radio_of_band 5g); r2=$(radio_of_band 2g)
+	get() { unb64 "$(sed -n "s/^$1 //p" "$f" | head -1)"; }
+	[ -n "$(get mesh_key)" ] || { log "settings without mesh key"; return 1; }
+	satellite_wan_to_lan
+	mesh_configure "$(get mesh_mesh_id)" "$(get mesh_key)" $(lan_ports)
+	val=$(get mesh_encryption); [ -n "$val" ] && uci set "wireless.mesh0.encryption=$val"
+	for v in channel htmode country; do
+		val=$(get r5_$v); [ -n "$val" ] && uci set "wireless.$r5.$v=$val"
+		val=$(get r2_$v); [ -n "$val" ] && uci set "wireless.$r2.$v=$val"
+	done
+	for i in default_radio0 default_radio1; do
+		for v in ssid encryption key ieee80211w ieee80211k bss_transition ieee80211r; do
+			val=$(get ${i}_$v); [ -n "$val" ] && uci set "wireless.$i.$v=$val"
+		done
+		# same on/off state as the registrar's AP (never turn on an AP the main unit has off)
+		[ "$(get ${i}_disabled)" = 1 ] && uci set "wireless.$i.disabled=1" || uci set "wireless.$i.disabled=0"
+	done
+	# satellite: plain bridge on the existing LAN — no DHCP/RA of its own, address via DHCP
+	uci set dhcp.lan.ignore='1'; uci set dhcp.lan.ra='disabled'; uci set dhcp.lan.dhcpv6='disabled'
+	uci set network.lan.proto='dhcp'
+	for o in ipaddr netmask gateway dns ip6assign; do uci -q delete network.lan.$o; done
+	uci commit network; uci commit wireless; uci commit dhcp
+	usteer_tune
+	log "applied mesh '$(get mesh_mesh_id)' from registrar $(get registrar); reloading"
+	/etc/init.d/dnsmasq restart >/dev/null 2>&1
+	/etc/init.d/odhcpd restart >/dev/null 2>&1
+	/etc/init.d/network reload
+	wifi reload
+	led green on
+}
+
+leave_mesh() {
+	local br
+	br=$(uci show network | sed -n "s/^network\.\([^.]*\)\.name='br-lan'$/\1/p" | head -1)
+	uci -q del_list "network.$br.ports=bat0"
+	for s in network.bat0 network.mesh wireless.mesh0 $(uci show network | sed -n "s/^\(network\.bb\(dev\)\{0,1\}_[^.=]*\)=\(interface\|device\)$/\1/p"); do
+		uci -q delete $s
+	done
+	uci commit network; uci commit wireless
+	/etc/init.d/network reload; wifi reload
+	log "left the mesh"
+	led_idle
+}
+
+# ================================================ status ==========================================
+
+status_json() {
+	local f id first=1
+	printf '{"configured":%s,"state":"%s","mac":"%s","model":"%s","mesh_id":"%s","requests":[' \
+		"$(is_configured && echo true || echo false)" "$(pair_state)" "$(my_mac)" "$(model)" \
+		"$(uci -q get wireless.mesh0.mesh_id)"
+	for f in $REQ/*.info; do
+		[ -e "$f" ] || continue
+		id=$(basename "$f" .info)
+		[ $first -eq 1 ] || printf ','; first=0
+		printf '{"id":"%s","mac":"%s","model":"%s","time":%s,"status":"%s"}' "$id" \
+			"$(sed -n 's/^mac=//p' "$f")" "$(sed -n 's/^model=//p' "$f")" "$(sed -n 's/^time=//p' "$f")" \
+			"$(cat $REQ/$id.status 2>/dev/null)"
+	done
+	printf '],"nodes":['
+	first=1
+	batctl n -H 2>/dev/null | while read -r ifc nb seen rest; do
+		[ $first -eq 1 ] || printf ','; first=0
+		printf '{"iface":"%s","mac":"%s","last_seen":"%s"}' "$ifc" "$nb" "$seen"
+	done
+	printf ']}\n'
+}
+
+case "$1" in
+pair)            # meshed node: open a pairing window; new node with internet on WAN: become the
+                 # main unit (create a mesh) and open the window; new node without uplink: join
+                 if is_configured; then registrar_start
+                 elif has_uplink; then create_mesh && sleep 15 && registrar_start
+                 else join_start; fi ;;
+create)          create_mesh ;;
+wired-backhaul)  wired_backhaul ;;
+bb-migrate)      bb_migrate ;;
+registrar-start) registrar_start ;;
+registrar-stop)  registrar_stop ;;
+join)            join_start ;;
+join-stop)       set_state idle; join_cleanup; led_idle ;;
+approve|reject)  [ -e "$REQ/$2.status" ] && grep -q pending "$REQ/$2.status" || { echo "no pending request $2"; exit 1; }
+                 [ "$1" = approve ] && echo approved > "$REQ/$2.status" || echo rejected > "$REQ/$2.status"
+                 log "request $2: $1d"; led_idle; [ "$(pair_state)" = registrar ] && led blue slow ;;
+export)          export_settings ;;
+apply)           apply_settings "$2" ;;
+leave)           leave_mesh ;;
+status)          status_json ;;
+led-idle)        led_idle ;;
+*)               sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; exit 1 ;;
+esac

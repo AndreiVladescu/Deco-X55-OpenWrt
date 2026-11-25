@@ -1,0 +1,467 @@
+From d093bdf49813640e99ebf15e045551dbe6b9c787 Mon Sep 17 00:00:00 2001
+From: Andrei Vladescu <52881237+AndreiVladescu@users.noreply.github.com>
+Date: Mon, 23 Nov 2026 21:34:17 +0200
+Subject: [PATCH] mediatek: filogic: add support for TP-Link Deco X55 v3
+
+Hardware:
+ - SoC:      MediaTek MT7981B, 2x Cortex-A53 @ 1.3 GHz
+ - RAM:      512 MiB DDR3
+ - Flash:    128 MiB SPI-NAND
+ - Ethernet: 2x 1GbE via MT7531 switch (LAN), 1x 1GbE via MT7981 internal PHY (WAN)
+ - Wi-Fi:    MT7981 2x2 2.4 GHz + 2x2 5 GHz (802.11ax, HE160), ePA/eLNA
+ - LED:      one RGB status LED (red GPIO 9, green GPIO 12, blue GPIO 28)
+ - Button:   reset (GPIO 1)
+
+The OEM boot chain is kept: TP-Link U-Boot loads the UBI volume "uboot"
+(TP-Link's "seconduboot") from the slot selected by tp_boot_idx, which then
+boots FIT configuration "config-X50_3_0_0" from volume "kernel". OpenWrt is
+installed into ubi0 with the OEM second U-Boot as static volume 0; ubi1 keeps
+the stock firmware as a fallback.
+
+Wi-Fi calibration and the base MAC are files inside the UBIFS volume
+"ubi_factory_data" (same scheme as the Mercusys H90X), mounted read-only
+in preinit. MAC addresses follow the stock scheme:
+LAN = base, WAN = base + 1, 2.4 GHz = base + 2, 5 GHz = base + 3.
+
+Installation (from the OEM firmware, needs UART):
+ 1. interrupt the OEM U-Boot, TFTP-boot the initramfs image:
+      tftpboot 0x50000000 <initramfs-kernel.bin>
+      bootm 0x50000000#config-X50_3_0_0
+ 2. sysupgrade with the sysupgrade image. This replaces kernel/rootfs in
+    slot ubi0, keeps the OEM "uboot" volume there and sets tp_boot_idx=0.
+ Revert to the OEM firmware in ubi1: fw_setenv tp_boot_idx 1
+
+Tested on two units: flash boot through the OEM chain, Ethernet/DSA,
+MACs, caldata, Wi-Fi (HE160 2x2, 2401.9 Mbit/s PHY), WED + PPE offload,
+LED, reset button, sysupgrade with and without kept settings.
+
+Signed-off-by: Andrei Vladescu <52881237+AndreiVladescu@users.noreply.github.com>
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+---
+ .../uboot-envtools/files/mediatek_filogic     |   1 +
+ .../dts/mt7981b-tplink-deco-x55-v3.dts        | 248 ++++++++++++++++++
+ .../filogic/base-files/etc/board.d/02_network |   4 +-
+ .../etc/hotplug.d/firmware/11-mt76-caldata    |   4 +
+ .../etc/hotplug.d/ieee80211/11_fix_wifi_mac   |  10 +
+ .../base-files/lib/preinit/09_mount_cfg_part  |   3 +-
+ .../base-files/lib/preinit/10_fix_eth_mac.sh  |   3 +-
+ .../base-files/lib/upgrade/platform.sh        |   7 +
+ target/linux/mediatek/image/filogic.mk        |  31 +++
+ 9 files changed, 308 insertions(+), 3 deletions(-)
+ create mode 100644 target/linux/mediatek/dts/mt7981b-tplink-deco-x55-v3.dts
+
+diff --git a/package/boot/uboot-tools/uboot-envtools/files/mediatek_filogic b/package/boot/uboot-tools/uboot-envtools/files/mediatek_filogic
+index ee36580463..ab3e47f338 100644
+--- a/package/boot/uboot-tools/uboot-envtools/files/mediatek_filogic
++++ b/package/boot/uboot-tools/uboot-envtools/files/mediatek_filogic
+@@ -149,6 +149,7 @@ mercusys,mr90x-v1|\
+ routerich,ax3000|\
+ routerich,ax3000-v1|\
+ tenbay,wr3000k|\
++tplink,deco-x55-v3|\
+ tplink,ex820v|\
+ tplink,re6000xd|\
+ wavlink,wl-wn536ax6-a)
+diff --git a/target/linux/mediatek/dts/mt7981b-tplink-deco-x55-v3.dts b/target/linux/mediatek/dts/mt7981b-tplink-deco-x55-v3.dts
+new file mode 100644
+index 0000000000..cb0e605bc0
+--- /dev/null
++++ b/target/linux/mediatek/dts/mt7981b-tplink-deco-x55-v3.dts
+@@ -0,0 +1,248 @@
++// SPDX-License-Identifier: GPL-2.0-only OR MIT
++/*
++ * TP-Link Deco X55 v3 (AX3000 mesh unit)
++ *
++ * MT7981B, 512 MiB DDR3, 128 MiB SPI-NAND, MT7531 switch (2 ports) + internal GbE PHY.
++ *
++ * Boot chain (kept as-is): BL2 -> BL31 -> TP-Link U-Boot -> "seconduboot" (UBI
++ * volume "uboot" in the active slot) -> FIT "kernel" volume, configuration
++ * "config-X50_3_0_0" -> "rootfs" volume via ubiblock.
++ * tp_boot_idx in u-boot-env selects the slot: 0 = ubi0, 1 = ubi1. The OEM
++ * second U-Boot overwrites bootargs with "... ubi.mtd=ubi<idx> ... init=/etc/preinit".
++ * OpenWrt lives in ubi0; ubi1 keeps the stock firmware as a fallback.
++ *
++ * Wi-Fi calibration and the base MAC are files inside the UBIFS volume
++ * "ubi_factory_data" on the factory_data partition (the "radio" partition is
++ * empty on this model).
++ *
++ * Status LED: a single RGB LED (red GPIO 9, green GPIO 12, blue GPIO 28).
++ */
++
++/dts-v1/;
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/input.h>
++#include <dt-bindings/leds/common.h>
++
++#include "mt7981b.dtsi"
++
++/ {
++	model = "TP-Link Deco X55 v3";
++	compatible = "tplink,deco-x55-v3", "mediatek,mt7981";
++
++	aliases {
++		serial0 = &uart0;
++		led-boot = &led_status_green;
++		led-failsafe = &led_status_red;
++		led-running = &led_status_green;
++		led-upgrade = &led_status_blue;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++
++	memory@40000000 {
++		reg = <0 0x40000000 0 0x20000000>;
++		device_type = "memory";
++	};
++
++	keys {
++		compatible = "gpio-keys";
++
++		button-reset {
++			label = "reset";
++			linux,code = <KEY_RESTART>;
++			gpios = <&pio 1 GPIO_ACTIVE_LOW>;
++		};
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		/*
++		 * One RGB status LED. Verified on hardware: red GPIO 9, green GPIO 12,
++		 * blue GPIO 28, all active-high. The OEM device tree (shared by the
++		 * X50/X55/X55 Pro family) also lists active-low variants on GPIO 4, 5,
++		 * 11 and 27; they do nothing on the X55 v3 and are left out.
++		 */
++		led_status_red: led-0 {
++			color = <LED_COLOR_ID_RED>;
++			function = LED_FUNCTION_STATUS;
++			gpios = <&pio 9 GPIO_ACTIVE_HIGH>;
++		};
++
++		led_status_green: led-1 {
++			color = <LED_COLOR_ID_GREEN>;
++			function = LED_FUNCTION_STATUS;
++			gpios = <&pio 12 GPIO_ACTIVE_HIGH>;
++		};
++
++		led_status_blue: led-2 {
++			color = <LED_COLOR_ID_BLUE>;
++			function = LED_FUNCTION_STATUS;
++			gpios = <&pio 28 GPIO_ACTIVE_HIGH>;
++		};
++	};
++};
++
++&uart0 {
++	status = "okay";
++};
++
++&watchdog {
++	status = "okay";
++};
++
++&eth {
++	status = "okay";
++
++	gmac0: mac@0 {
++		compatible = "mediatek,eth-mac";
++		reg = <0>;
++		phy-mode = "2500base-x";
++
++		fixed-link {
++			speed = <2500>;
++			full-duplex;
++			pause;
++		};
++	};
++
++	/* WAN: MT7981 internal gigabit PHY */
++	gmac1: mac@1 {
++		compatible = "mediatek,eth-mac";
++		reg = <1>;
++		phy-mode = "gmii";
++		phy-handle = <&int_gbe_phy>;
++	};
++
++	mdio: mdio-bus {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		switch@1f {
++			compatible = "mediatek,mt7531";
++			reg = <31>;
++			reset-gpios = <&pio 39 GPIO_ACTIVE_HIGH>;
++
++			ports {
++				#address-cells = <1>;
++				#size-cells = <0>;
++
++				port@1 {
++					reg = <1>;
++					label = "lan1";
++				};
++
++				port@2 {
++					reg = <2>;
++					label = "lan2";
++				};
++
++				port@6 {
++					reg = <6>;
++					label = "cpu";
++					ethernet = <&gmac0>;
++					phy-mode = "2500base-x";
++
++					fixed-link {
++						speed = <2500>;
++						full-duplex;
++						pause;
++					};
++				};
++			};
++		};
++	};
++};
++
++&spi0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&spi0_flash_pins>;
++	status = "okay";
++
++	spi_nand: spi_nand@0 {
++		compatible = "spi-nand";
++		reg = <0>;
++		spi-max-frequency = <52000000>;
++		spi-tx-bus-width = <4>;
++		spi-rx-bus-width = <4>;
++
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			partition@0 {
++				label = "boot";
++				reg = <0x0000000 0x0200000>;
++				read-only;
++			};
++
++			/* writable: holds tp_boot_idx (slot selection) */
++			partition@200000 {
++				label = "u-boot-env";
++				reg = <0x0200000 0x0100000>;
++			};
++
++			/* OpenWrt: UBI volumes uboot (OEM second U-Boot), kernel, rootfs, rootfs_data */
++			partition@300000 {
++				label = "ubi0";
++				reg = <0x0300000 0x2a00000>;
++			};
++
++			/* stock firmware fallback slot */
++			partition@2d00000 {
++				label = "ubi1";
++				reg = <0x2d00000 0x2a00000>;
++				read-only;
++			};
++
++			/* empty on this model */
++			partition@5700000 {
++				label = "radio";
++				reg = <0x5700000 0x0100000>;
++				read-only;
++			};
++
++			/* UBI/UBIFS "ubi_factory_data": default-mac, MT7981_EEPROM.bin, product-info */
++			partition@5800000 {
++				label = "factory_data";
++				reg = <0x5800000 0x0900000>;
++				read-only;
++			};
++
++			/* UBI/UBIFS "ubi_runtime_data": stock user configuration */
++			partition@6100000 {
++				label = "runtime_data";
++				reg = <0x6100000 0x1100000>;
++				read-only;
++			};
++		};
++	};
++};
++
++&pio {
++	spi0_flash_pins: spi0-pins {
++		mux {
++			function = "spi";
++			groups = "spi0", "spi0_wp_hold";
++		};
++
++		conf-pu {
++			pins = "SPI0_CS", "SPI0_HOLD", "SPI0_WP";
++			drive-strength = <MTK_DRIVE_8mA>;
++			bias-pull-up = <MTK_PUPD_SET_R1R0_11>;
++		};
++
++		conf-pd {
++			pins = "SPI0_CLK", "SPI0_MOSI", "SPI0_MISO";
++			drive-strength = <MTK_DRIVE_8mA>;
++			bias-pull-down = <MTK_PUPD_SET_R1R0_11>;
++		};
++	};
++};
++
++&wifi {
++	status = "okay";
++};
+diff --git a/target/linux/mediatek/filogic/base-files/etc/board.d/02_network b/target/linux/mediatek/filogic/base-files/etc/board.d/02_network
+index 3150877938..1654fc4166 100644
+--- a/target/linux/mediatek/filogic/base-files/etc/board.d/02_network
++++ b/target/linux/mediatek/filogic/base-files/etc/board.d/02_network
+@@ -257,6 +257,7 @@ mediatek_setup_interfaces()
+ 		;;
+ 	mercusys,h90x-v1|\
+ 	mercusys,h90x-v1-ubi|\
++	tplink,deco-x55-v3|\
+ 	tplink,tl-xdr6086|\
+ 	wavlink,wl-wn551x3|\
+ 	wavlink,wl-wn586x3|\
+@@ -364,7 +365,8 @@ mediatek_setup_macs()
+ 		wan_mac=$label_mac
+ 		lan_mac=$(macaddr_add "$label_mac" 1)
+ 		;;
+-	mercusys,h90x-v1)
++	mercusys,h90x-v1|\
++	tplink,deco-x55-v3)
+ 		label_mac=$(get_mac_binary "/tmp/factory_data/default-mac" 0)
+ 		lan_mac=$label_mac
+ 		wan_mac=$(macaddr_add "$lan_mac" 1)
+diff --git a/target/linux/mediatek/filogic/base-files/etc/hotplug.d/firmware/11-mt76-caldata b/target/linux/mediatek/filogic/base-files/etc/hotplug.d/firmware/11-mt76-caldata
+index e189777a66..90a3deeb9c 100644
+--- a/target/linux/mediatek/filogic/base-files/etc/hotplug.d/firmware/11-mt76-caldata
++++ b/target/linux/mediatek/filogic/base-files/etc/hotplug.d/firmware/11-mt76-caldata
+@@ -14,6 +14,10 @@ case "$FIRMWARE" in
+ 		ln -sf /tmp/tp_data/MT7981_EEPROM.bin \
+ 			/lib/firmware/$FIRMWARE
+ 		;;
++	tplink,deco-x55-v3)
++		ln -sf /tmp/factory_data/MT7981_EEPROM.bin \
++			/lib/firmware/$FIRMWARE
++		;;
+ 	tplink,f65-v1)
+ 		ln -sf /tmp/factory/radio /lib/firmware/$FIRMWARE
+ 		;;
+diff --git a/target/linux/mediatek/filogic/base-files/etc/hotplug.d/ieee80211/11_fix_wifi_mac b/target/linux/mediatek/filogic/base-files/etc/hotplug.d/ieee80211/11_fix_wifi_mac
+index 2e08078491..3174452284 100644
+--- a/target/linux/mediatek/filogic/base-files/etc/hotplug.d/ieee80211/11_fix_wifi_mac
++++ b/target/linux/mediatek/filogic/base-files/etc/hotplug.d/ieee80211/11_fix_wifi_mac
+@@ -240,6 +240,16 @@ case "$board" in
+ 		[ "$PHYNBR" = "0" ] && echo "$label_mac" > /sys${DEVPATH}/macaddress
+ 		[ "$PHYNBR" = "1" ] && macaddr_add "$label_mac" -1 > /sys${DEVPATH}/macaddress
+ 		;;
++	tplink,deco-x55-v3)
++		# stock scheme: 2.4 GHz = base + 2, 5 GHz = base + 3; decide by band, not by
++		# phy number (a driver reload renumbers the phys)
++		label_mac=$(get_mac_binary "/tmp/factory_data/default-mac" 0)
++		if iw phy "phy$PHYNBR" info 2>/dev/null | grep -q " 5180\.0 MHz"; then
++			macaddr_add "$label_mac" 3 > /sys${DEVPATH}/macaddress
++		else
++			macaddr_add "$label_mac" 2 > /sys${DEVPATH}/macaddress
++		fi
++		;;
+ 	mercusys,mr80x-v3|\
+ 	mercusys,mr85x)
+ 		mac_dirty=$(cat "/tmp/tp_data/default-mac" | sed -n 's/^'"MAC"'://p')
+diff --git a/target/linux/mediatek/filogic/base-files/lib/preinit/09_mount_cfg_part b/target/linux/mediatek/filogic/base-files/lib/preinit/09_mount_cfg_part
+index a0cc80153c..c794f6b0ec 100644
+--- a/target/linux/mediatek/filogic/base-files/lib/preinit/09_mount_cfg_part
++++ b/target/linux/mediatek/filogic/base-files/lib/preinit/09_mount_cfg_part
+@@ -13,7 +13,8 @@ mount_ubi_part() {
+ 
+ preinit_mount_cfg_part() {
+ 	case $(board_name) in
+-	mercusys,h90x-v1)
++	mercusys,h90x-v1|\
++	tplink,deco-x55-v3)
+ 		mount_ubi_part "factory_data" "ubi_factory_data"
+ 		;;
+ 	mercusys,mr80x-v3|\
+diff --git a/target/linux/mediatek/filogic/base-files/lib/preinit/10_fix_eth_mac.sh b/target/linux/mediatek/filogic/base-files/lib/preinit/10_fix_eth_mac.sh
+index 2deee5633e..a0e31e861c 100644
+--- a/target/linux/mediatek/filogic/base-files/lib/preinit/10_fix_eth_mac.sh
++++ b/target/linux/mediatek/filogic/base-files/lib/preinit/10_fix_eth_mac.sh
+@@ -28,7 +28,8 @@ preinit_set_mac_address() {
+ 		ip link set dev eth0 address "$addr"
+ 		ip link set dev eth1 address "$addr"
+ 		;;
+-	mercusys,h90x-v1)
++	mercusys,h90x-v1|\
++	tplink,deco-x55-v3)
+ 		addr=$(get_mac_binary "/tmp/factory_data/default-mac" 0)
+ 		ip link set dev eth1 address "$(macaddr_add "$addr" 1)"
+ 		;;
+diff --git a/target/linux/mediatek/filogic/base-files/lib/upgrade/platform.sh b/target/linux/mediatek/filogic/base-files/lib/upgrade/platform.sh
+index 156523b402..6d4da504c8 100644
+--- a/target/linux/mediatek/filogic/base-files/lib/upgrade/platform.sh
++++ b/target/linux/mediatek/filogic/base-files/lib/upgrade/platform.sh
+@@ -359,6 +359,13 @@ platform_do_upgrade() {
+ 		CI_UBIPART="ubi0"
+ 		nand_do_upgrade "$1"
+ 		;;
++	tplink,deco-x55-v3)
++		# OpenWrt lives in slot ubi0 next to the OEM "uboot" volume (kept); slot ubi1 keeps the
++		# stock firmware. Make the OEM bootloader boot slot 0.
++		[ "$(fw_printenv -n tp_boot_idx 2>/dev/null)" = "0" ] || fw_setenv tp_boot_idx 0
++		CI_UBIPART="ubi0"
++		nand_do_upgrade "$1"
++		;;
+ 	ltc,vl7m19k)
+ 		mtk_dual_boot_flash_both_slots "$1"
+ 		# clear any marker the bootloader set after failing to verify
+diff --git a/target/linux/mediatek/image/filogic.mk b/target/linux/mediatek/image/filogic.mk
+index 4ac459d6ee..872b67cdff 100644
+--- a/target/linux/mediatek/image/filogic.mk
++++ b/target/linux/mediatek/image/filogic.mk
+@@ -3839,6 +3839,37 @@ define Device/tplink_be450-ubi
+ endef
+ TARGET_DEVICES += tplink_be450-ubi
+ 
++# OEM U-Boot chain: the first U-Boot loads the UBI volume "uboot" (TP-Link's
++# "seconduboot") from the slot selected by tp_boot_idx, which then boots FIT
++# configuration "config-X50_3_0_0" from volume "kernel".
++# Installation keeps the "uboot" volume that is already in slot ubi0 (sysupgrade only replaces
++# kernel/rootfs), so no TP-Link binary is part of the images. A raw factory.ubi is only built if
++# the seconduboot binary (from your own flash dump) is passed in:
++#   make TPLINK_DECO_X55_V3_SECONDUBOOT=/path/to/seconduboot.bin
++TPLINK_DECO_X55_V3_SECONDUBOOT ?=
++
++define Device/tplink_deco-x55-v3
++  DEVICE_VENDOR := TP-Link
++  DEVICE_MODEL := Deco X55
++  DEVICE_VARIANT := v3
++  DEVICE_DTS := mt7981b-tplink-deco-x55-v3
++  DEVICE_DTS_DIR := ../dts
++  DEVICE_DTS_CONFIG := config-X50_3_0_0
++  DEVICE_PACKAGES := kmod-mt7915e kmod-mt7981-firmware mt7981-wo-firmware
++  UBINIZE_OPTS := -E 5
++  BLOCKSIZE := 128k
++  PAGESIZE := 2048
++  IMAGE_SIZE := 43008k
++  KERNEL_IN_UBI := 1
++  KERNEL_INITRAMFS := kernel-bin | lzma | \
++	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd | pad-to 64k
++  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
++  UBINIZE_PARTS := $(if $(wildcard $(TPLINK_DECO_X55_V3_SECONDUBOOT)),uboot=:$(TPLINK_DECO_X55_V3_SECONDUBOOT))
++  IMAGES += $(if $(wildcard $(TPLINK_DECO_X55_V3_SECONDUBOOT)),factory.ubi)
++  IMAGE/factory.ubi := append-ubi | check-size $$$$(IMAGE_SIZE)
++endef
++TARGET_DEVICES += tplink_deco-x55-v3
++
+ define Device/tplink_eap683-lr
+   DEVICE_VENDOR := TP-Link
+   DEVICE_MODEL := EAP683-LR
+-- 
+2.43.0
+

@@ -1,0 +1,4 @@
+#!/bin/sh
+# deco-mesh 0.4: backhaul VLANs get their own MAC (see bb_mac in /usr/sbin/decomesh)
+[ -x /usr/sbin/decomesh ] && /usr/sbin/decomesh bb-migrate
+exit 0

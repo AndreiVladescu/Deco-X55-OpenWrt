@@ -1,0 +1,4 @@
+#!/bin/sh
+# registrar LED while a join request is waiting for approval: fast blue blink
+l=/sys/class/leds/blue:status
+[ -d $l ] && { echo timer > $l/trigger; echo 120 > $l/delay_on; echo 120 > $l/delay_off; }

@@ -1,0 +1,10 @@
+# build tree (tools/setup_openwrt.sh clones OpenWrt here)
+/openwrt/
+# never commit flash dumps, TP-Link binaries or firmware images (images go to GitHub Releases)
+/backup/
+/oem/
+/stock/
+/tftp/
+*.bin
+*.ubi
+__pycache__/

@@ -1,0 +1,21 @@
+#!/bin/sh
+# rpcd plugin: ubus call decomesh <method>
+case "$1" in
+list)
+	echo '{"status":{},"start_pairing":{},"stop_pairing":{},"approve":{"id":"str"},"reject":{"id":"str"},"leave":{},"create":{},"join":{}}'
+;;
+call)
+	read -r input
+	id=$(echo "$input" | jsonfilter -e '@.id' 2>/dev/null | tr -cd '0-9a-f')
+	case "$2" in
+	status)        /usr/sbin/decomesh status ;;
+	start_pairing) /usr/sbin/decomesh pair >/dev/null 2>&1 & echo '{"ok":true}' ;;
+	stop_pairing)  ( /usr/sbin/decomesh registrar-stop; /usr/sbin/decomesh join-stop ) >/dev/null 2>&1 & echo '{"ok":true}' ;;
+	approve|reject)
+		if /usr/sbin/decomesh "$2" "$id" >/dev/null 2>&1; then echo '{"ok":true}'; else echo '{"ok":false}'; fi ;;
+	leave)         /usr/sbin/decomesh leave >/dev/null 2>&1 & echo '{"ok":true}' ;;
+	create)        ( /usr/sbin/decomesh create; /usr/sbin/decomesh registrar-start ) >/dev/null 2>&1 & echo '{"ok":true}' ;;
+	join)          /usr/sbin/decomesh join >/dev/null 2>&1 & echo '{"ok":true}' ;;
+	esac
+;;
+esac

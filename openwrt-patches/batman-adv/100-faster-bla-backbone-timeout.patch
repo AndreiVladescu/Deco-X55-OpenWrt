@@ -1,0 +1,23 @@
+From: Deco X55 v3 OpenWrt port
+Subject: batman-adv: shorten the bridge loop avoidance period to 1 s
+
+With a wired backhaul, a satellite and the main node sit on the same LAN and become BLA
+backbone gateways for each other. When the satellite's cable is pulled, the main node keeps it
+as a backbone gateway until BATADV_BLA_BACKBONE_TIMEOUT (6 periods) expires and, until then,
+drops the satellite's frames arriving over the wireless mesh (they "should" come from the LAN).
+With the stock 10 s period that is 60-70 s without connectivity. A 1 s period gives ~6-7 s.
+Cost: one small announcement frame per backbone gateway and VLAN per second on the LAN.
+Claims time out after 10 s instead of 100 s and are re-learnt from the next frame.
+The loop detection interval (6 periods = 6 s) stays above its 3 s timeout.
+
+--- a/net/batman-adv/main.h
++++ b/net/batman-adv/main.h
+@@ -104,7 +104,7 @@
+ #define BATADV_MAX_AGGREGATION_BYTES 512
+ #define BATADV_MAX_AGGREGATION_MS 100
+ 
+-#define BATADV_BLA_PERIOD_LENGTH	10000	/* 10 seconds */
++#define BATADV_BLA_PERIOD_LENGTH	1000	/* 1 second (Deco X55 port: fast wired-backhaul failover) */
+ #define BATADV_BLA_BACKBONE_TIMEOUT	(BATADV_BLA_PERIOD_LENGTH * 6)
+ #define BATADV_BLA_CLAIM_TIMEOUT	(BATADV_BLA_PERIOD_LENGTH * 10)
+ #define BATADV_BLA_WAIT_PERIODS		3

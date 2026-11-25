@@ -1,0 +1,31 @@
+#!/bin/sh
+# decomesh join service — only reachable on the registrar's pairing link (10.234.0.1:8099)
+#   ?op=request&mac=..&nonce=..&model=..   -> "id=<hex>"
+#   ?op=status&id=..&nonce=..              -> "pending" | "rejected" | "expired" | "approved\n<settings>"
+REQ=/tmp/decomesh/requests
+echo "Content-Type: text/plain"; echo
+[ "$(cat /tmp/decomesh/state 2>/dev/null)" = registrar ] || { echo closed; exit 0; }
+q() { echo "$QUERY_STRING" | tr '&' '\n' | sed -n "s/^$1=//p" | head -1 | sed 's/%20/ /g' | tr -cd 'A-Za-z0-9:._ -'; }
+op=$(q op); nonce=$(q nonce); id=$(q id)
+case "$op" in
+request)
+	mac=$(q mac); model=$(q model)
+	[ ${#nonce} -ge 16 ] && [ -n "$mac" ] || { echo bad; exit 0; }
+	[ "$(ls $REQ/*.info 2>/dev/null | wc -l)" -lt 8 ] || { echo busy; exit 0; }
+	id=$(head -c 64 /dev/urandom | md5sum | cut -c1-12)
+	printf 'mac=%s\nmodel=%s\nnonce=%s\ntime=%s\nip=%s\n' "$mac" "$model" "$nonce" "$(date +%s)" "$REMOTE_ADDR" > $REQ/$id.info
+	echo pending > $REQ/$id.status
+	logger -t decomesh "join request $id from $mac ($model) - waiting for approval"
+	. /usr/sbin/decomesh-led 2>/dev/null
+	echo "id=$id" ;;
+status)
+	[ -e "$REQ/$id.info" ] && [ "$(sed -n 's/^nonce=//p' $REQ/$id.info)" = "$nonce" ] || { echo unknown; exit 0; }
+	st=$(cat $REQ/$id.status)
+	echo "$st"
+	if [ "$st" = approved ]; then
+		/usr/sbin/decomesh export
+		echo delivered > $REQ/$id.status
+		logger -t decomesh "settings delivered to request $id"
+	fi ;;
+*) echo bad ;;
+esac

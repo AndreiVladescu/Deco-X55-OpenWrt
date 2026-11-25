@@ -1,0 +1,1771 @@
+\x01
+F0: 102B 0000
+FA: 1040 0000
+FA: 1040 0000 [0200]
+F9: 0000 0000
+V0: 0000 0000 [0001]
+00: 0000 0000
+BP: 2400 0041 [0000]
+G0: 1190 0000
+EC: 0000 0000 [1000]
+T0: 0000 0153 [010F]
+Jump to BL
+
+NOTICE:  BL2: v2.7(release):d65182e179-dirty
+NOTICE:  BL2: Built : 17:06:58, Dec  8 2025
+NOTICE:  WDT: disabled
+NOTICE:  EMI: Using DDR3 settings
+
+dump toprgu registers data: 
+1001c000 | 00000000 0000ffe0 00000000 00000000
+1001c010 | 00000fff 00000000 00f00000 00000000
+1001c020 | 00000000 00000000 00000000 00000000
+1001c030 | 003c0003 003c0003 00000000 00000000
+1001c040 | 00000000 00000000 00000000 00000000
+1001c050 | 00000000 00000000 00000000 00000000
+1001c060 | 00000000 00000000 00000000 00000000
+1001c070 | 00000000 00000000 00000000 00000000
+1001c080 | 00000000 00000000 00000000 00000000
+
+dump drm registers data: 
+1001d000 | 00000000 00000000 00000000 00000000
+1001d010 | 00000000 00000000 00000000 00000000
+1001d020 | 00000000 00000000 00000000 00000000
+1001d030 | 00a083f1 000003ff 00100000 00000000
+1001d040 | 00000000 00000000 00020303 000000ff
+1001d050 | 00000000 00000000 00000000 00000000
+1001d060 | 00000002 00000000 00000000 00000000
+drm: 500 = 0x8 
+[DDR Reserve] ddr reserve mode not be enabled yet
+DDR RESERVE Success 0
+[EMI] ComboMCP not ready, using default setting
+BYTE_swap:0 
+BYTE_swap:0 
+Window Sum 620, worse bit 0, min window 76
+Window Sum 640, worse bit 8, min window 80
+Window Sum 460, worse bit 2, min window 56
+Window Sum 454, worse bit 8, min window 54
+Window Sum 472, worse bit 3, min window 56
+Window Sum 462, worse bit 8, min window 56
+Window Sum 482, worse bit 3, min window 58
+Window Sum 478, worse bit 8, min window 56
+Window Sum 488, worse bit 3, min window 58
+Window Sum 488, worse bit 8, min window 60
+Window Sum 496, worse bit 3, min window 58
+Window Sum 494, worse bit 8, min window 60
+Window Sum 506, worse bit 1, min window 62
+Window Sum 510, worse bit 8, min window 60
+Window Sum 516, worse bit 3, min window 62
+Window Sum 518, worse bit 8, min window 62
+Window Sum 526, worse bit 3, min window 64
+Window Sum 522, worse bit 8, min window 64
+Window Sum 534, worse bit 1, min window 66
+Window Sum 534, worse bit 8, min window 64
+Window Sum 538, worse bit 3, min window 66
+Window Sum 536, worse bit 8, min window 64
+NOTICE:  EMI: Detected DRAM size: 512MB
+NOTICE:  EMI: complex R/W mem test passed
+NOTICE:  CPU: MT7981 (1300MHz)
+NOTICE:  SPI_NAND parses attributes from parameter page.
+NOTICE:  SPI_NAND Detected ID 0x8c
+NOTICE:  Page size 2048, Block size 131072, size 134217728
+NOTICE:  BL2: Booting BL31
+NOTICE:  BL31: v2.7(release):d65182e179-dirty
+NOTICE:  BL31: Built : 17:07:01, Dec  8 2025
+NOTICE:  Hello BL31!!!
+
+
+U-Boot 2022.07-rc3 (Dec 08 2025 - 17:06:06 +0800)
+
+CPU:   MediaTek MT7981
+Model: mt7981-rfb
+DRAM:  512 MiB
+Core:  33 devices, 14 uclasses, devicetree: embed
+MMC:   
+Loading Environment from MTD... spi-nand: spi_nand spi_nand@0: GigaDevice SPI NAND was found.
+spi-nand: spi_nand spi_nand@0: 128 MiB, block size: 128 KiB, page size: 2048, OOB size: 64
+OK
+In:    serial@11002000
+Out:   serial@11002000
+Err:   serial@11002000
+Net:   eth0: ethernet@15100000
+press ctrl-c or t to go to uboot cmdline
+\x08\x08\x08 0 skip set config_name
+change to second partition
+new bootarg:flashname=MT7981-NAND mtdparts=MT7981-NAND:0x00200000@0x00000000(uboot)ro,0x00100000@0x00200000(ubootenv),0x02A00000@0x00300000(root0),0x02A00000@0x02D00000(root1),0x00100000@0x05700000(radio),0x00900000@0x05800000(factory_data),0x01100000@0x06100000(runtime_data),128M@0(wholeflash),0x00100000@0x00100000(nvram),0x02A00000@0x00300000(rootfs_0)ro,0x02A00000@0x02D00000(backup) ubi.mtd=ubi1 console=ttyS0,115200n1 loglevel=8 earlycon=uart8250,mmio32,0x11002000 init=/etc/preinit config_name=config@X50_3_0_0
+ubi0: attaching mtd4
+ubi0: scanning is finished
+ubi0: attached mtd4 (name "ubi1", size 42 MiB)
+ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+ubi0: VID header offset: 2048 (aligned 2048), data offset: 4096
+ubi0: good PEBs: 336, bad PEBs: 0, corrupted PEBs: 0
+ubi0: user volume: 3, internal volumes: 1, max. volumes count: 128
+ubi0: max/mean erase counter: 1/0, WL threshold: 4096, image sequence number: 31924003
+ubi0: available PEBs: 66, total reserved PEBs: 270, PEBs reserved for bad PEB handling: 20
+Reading from volume 'uboot' to 0x41dfffc0, size 0x0 ... OK
+Reading from volume 'rootfs' to 0x4a000000, size 0x0 ... OK
+Reading from volume 'kernel' to 0x46000000, size 0x0 ... OK
+## Booting kernel from Legacy Image at 41dfffc0 ...
+   Image Name:   seconduboot
+   Image Type:   ARM Linux Standalone Program (uncompressed)
+   Data Size:    785576 Bytes = 767.2 KiB
+   Load Address: 00000000
+   Entry Point:  41e00000
+   Verifying Checksum ... OK
+   Loading Standalone Program
+
+
+U-Boot 2022.07-rc3 (Aug 14 2026 - 04:36:30 +0000)
+
+CPU:   MediaTek MT7981
+Model: mt7981-rfb
+DRAM:  512 MiB
+Core:  33 devices, 14 uclasses, devicetree: embed
+MMC:   
+Loading Environment from MTD... spi-nand: spi_nand spi_nand@0: GigaDevice SPI NAND was found.
+spi-nand: spi_nand spi_nand@0: 128 MiB, block size: 128 KiB, page size: 2048, OOB size: 64
+OK
+In:    serial@11002000
+Out:   serial@11002000
+Err:   serial@11002000
+Net:   eth0: ethernet@15100000
+change to second partition
+new bootarg:flashname=MT7981-NAND mtdparts=MT7981-NAND:0x00200000@0x00000000(uboot)ro,0x00100000@0x00200000(ubootenv),0x02A00000@0x00300000(root0),0x02A00000@0x02D00000(root1),0x00100000@0x05700000(radio),0x00900000@0x05800000(factory_data),0x01100000@0x06100000(runtime_data),128M@0(wholeflash),0x00100000@0x00100000(nvram),0x02A00000@0x00300000(rootfs_0)ro,0x02A00000@0x02D00000(backup) ubi.mtd=ubi1 console=ttyS0,115200n1 loglevel=8 earlycon=uart8250,mmio32,0x11002000 init=/etc/preinit config_name=config@X50_3_0_0
+second uboot to boot kernel @46000000
+## Loading kernel from FIT Image at 46000000 ...
+   Using 'config-X50_3_0_0' configuration
+   Trying 'kernel-1' kernel subimage
+     Description:  ARM64 OpenWrt Linux-5.4.124
+     Type:         Kernel Image
+     Compression:  lzma compressed
+     Data Start:   0x460000e8
+     Data Size:    3404707 Bytes = 3.2 MiB
+     Architecture: AArch64
+     OS:           Linux
+     Load Address: 0x48080000
+     Entry Point:  0x48080000
+     Hash algo:    crc32
+     Hash value:   9dc27494
+     Hash algo:    sha1
+     Hash value:   808f6db6e0d3f9cc682829df0aae3cfde8e1f2cb
+   Verifying Hash Integrity ... crc32+ sha1+ OK
+## Loading fdt from FIT Image at 46000000 ...
+   Using 'config-X50_3_0_0' configuration
+   Trying 'fdt-X50_3_0_0' fdt subimage
+     Description:  ARM64 OpenWrt mt7981-spim-nand-rfb-multi  X50_3_0_0 device tree blob
+     Type:         Flat Device Tree
+     Compression:  uncompressed
+     Data Start:   0x46343ef8
+     Data Size:    18758 Bytes = 18.3 KiB
+     Architecture: AArch64
+     Hash algo:    crc32
+     Hash value:   a5d43db6
+     Hash algo:    sha1
+     Hash value:   2a725b9e55503e965d896d658375d29b26704a88
+   Verifying Hash Integrity ... crc32+ sha1+ OK
+   Booting using the fdt blob at 0x46343ef8
+   Uncompressing Kernel Image
+   Loading Device Tree to 000000005f7f2000, end 000000005f7f9945 ... OK
+
+Starting kernel ...
+
+[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd034]
+[    0.000000] Linux version 5.4.124 (tplink@49d328718027) (gcc version 8.4.0 (OpenWrt GCC 8.4.0 r0-12cfaeb0b4)) #0 SMP Fri Aug 14 03:20:40 2026
+[    0.000000] Machine model: MediaTek MT7981 RFB
+[    0.000000] earlycon: uart8250 at MMIO32 0x0000000011002000 (options '')
+[    0.000000] printk: bootconsole [uart8250] enabled
+[    0.000000] On node 0 totalpages: 130128
+[    0.000000]   DMA32 zone: 2048 pages used for memmap
+[    0.000000]   DMA32 zone: 0 pages reserved
+[    0.000000]   DMA32 zone: 130128 pages, LIFO batch:31
+[    0.000000] psci: probing for conduit method from DT.
+[    0.000000] psci: PSCIv1.1 detected in firmware.
+[    0.000000] psci: Using standard PSCI v0.2 function IDs
+[    0.000000] psci: MIGRATE_INFO_TYPE not supported.
+[    0.000000] psci: SMC Calling Convention v1.0
+[    0.000000] percpu: Embedded 20 pages/cpu s44248 r8192 d29480 u81920
+[    0.000000] pcpu-alloc: s44248 r8192 d29480 u81920 alloc=20*4096
+[    0.000000] pcpu-alloc: [0] 0 [0] 1 
+[    0.000000] Detected VIPT I-cache on CPU0
+[    0.000000] CPU features: detected: ARM erratum 845719
+[    0.000000] CPU features: detected: GIC system register CPU interface
+[    0.000000] CPU features: kernel page table isolation disabled by kernel configuration
+[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 128080
+[    0.000000] Kernel command line: flashname=MT7981-NAND mtdparts=MT7981-NAND:0x00200000@0x00000000(uboot)ro,0x00100000@0x00200000(ubootenv),0x02A00000@0x00300000(root0),0x02A00000@0x02D00000(root1),0x00100000@0x05700000(radio),0x00900000@0x05800000(factory_data),0x01100000@0x06100000(runtime_data),128M@0(wholeflash),0x00100000@0x00100000(nvram),0x02A00000@0x00300000(rootfs_0)ro,0x02A00000@0x02D00000(backup) ubi.mtd=ubi1 console=ttyS0,115200n1 loglevel=8 earlycon=uart8250,mmio32,0x11002000 init=/etc/preinit config_name=config@X50_3_0_0
+[    0.000000] Dentry cache hash table entries: 65536 (order: 7, 524288 bytes, linear)
+[    0.000000] Inode-cache hash table entries: 32768 (order: 6, 262144 bytes, linear)
+[    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
+[    0.000000] Memory: 491848K/520512K available (6910K kernel code, 552K rwdata, 1956K rodata, 448K init, 299K bss, 28664K reserved, 0K cma-reserved)
+[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=2, Nodes=1
+[    0.000000] rcu: Hierarchical RCU implementation.
+[    0.000000] rcu:     CONFIG_RCU_FANOUT set to non-default value of 32.
+[    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is 10 jiffies.
+[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+[    0.000000] GICv3: GIC: Using split EOI/Deactivate mode
+[    0.000000] GICv3: 640 SPIs implemented
+[    0.000000] GICv3: 0 Extended SPIs implemented
+[    0.000000] GICv3: Distributor has no Range Selector support
+[    0.000000] GICv3: 16 PPIs implemented
+[    0.000000] GICv3: no VLPI support, no direct LPI support
+[    0.000000] GICv3: CPU0: found redistributor 0 region 0:0x000000000c080000
+[    0.000000] random: get_random_bytes called from start_kernel+0x2ec/0x438 with crng_init=0
+[    0.000000] arch_timer: cp15 timer(s) running at 13.00MHz (phys).
+[    0.000000] clocksource: arch_sys_counter: mask: 0xffffffffffffff max_cycles: 0x2ff89eacb, max_idle_ns: 440795202429 ns
+[    0.000003] sched_clock: 56 bits at 13MHz, resolution 76ns, wraps every 4398046511101ns
+[    0.008185] Calibrating delay loop (skipped), value calculated using timer frequency.. 26.00 BogoMIPS (lpj=130000)
+[    0.018593] pid_max: default: 32768 minimum: 301
+[    0.023312] Mount-cache hash table entries: 1024 (order: 1, 8192 bytes, linear)
+[    0.030663] Mountpoint-cache hash table entries: 1024 (order: 1, 8192 bytes, linear)
+[    0.039328] ASID allocator initialised with 65536 entries
+[    0.044830] rcu: Hierarchical SRCU implementation.
+[    0.049943] smp: Bringing up secondary CPUs ...
+[    0.054759] Detected VIPT I-cache on CPU1
+[    0.054781] GICv3: CPU1: found redistributor 1 region 0:0x000000000c0a0000
+[    0.054807] CPU1: Booted secondary processor 0x0000000001 [0x410fd034]
+[    0.054871] smp: Brought up 1 node, 2 CPUs
+[    0.076472] SMP: Total of 2 processors activated.
+[    0.081194] CPU features: detected: 32-bit EL0 Support
+[    0.086351] CPU features: detected: CRC32 instructions
+[    0.091625] CPU: All CPU(s) started at EL2
+[    0.095741] alternatives: patching kernel code
+[    0.102778] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
+[    0.112684] futex hash table entries: 512 (order: 3, 32768 bytes, linear)
+[    0.119581] pinctrl core: initialized pinctrl subsystem
+[    0.125429] NET: Registered protocol family 16
+[    0.130148] DMA: preallocated 256 KiB pool for atomic allocations
+[    0.136786] cpuidle: using governor ladder
+[    0.140926] cpuidle: using governor menu
+[    0.157061] cryptd: max_cpu_qlen set to 1000
+[    0.163096] SCSI subsystem initialized
+[    0.167040] libata version 3.00 loaded.
+[    0.171049] [phy_init] : phy_driver : gpy211
+[    0.171146] usbcore: registered new interface driver usbfs
+[    0.181105] usbcore: registered new interface driver hub
+[    0.186478] usbcore: registered new device driver usb
+[    0.191975] workqueue: max_active 576 requested for napi_workq is out of range, clamping between 1 and 512
+[    0.202362] rbus 18000000.wbsys: PCI host bridge to bus 0000:00
+[    0.208343] pci_bus 0000:00: root bus resource [mem 0x18000000-0x18ffffff]
+[    0.215250] pci_bus 0000:00: root bus resource [bus 00-ff]
+[    0.220764] pci_bus 0000:00: scanning bus
+[    0.224801] pci 0000:00:00.0: [14c3:7981] type 00 class 0x000280
+[    0.230865] pci 0000:00:00.0: reg 0x10: [mem 0x18000000-0x1800000f 64bit]
+[    0.237687] pci 0000:00:00.0: reg 0x18: [mem 0x00000000-0x0000000f]
+[    0.243991] pci 0000:00:00.0: reg 0x1c: [mem 0x00000000-0x0000000f]
+[    0.250286] pci 0000:00:00.0: reg 0x20: [mem 0x00000000-0x0000000f]
+[    0.256586] pci 0000:00:00.0: reg 0x24: [mem 0x00000000-0x0000000f]
+[    0.263813] pci_bus 0000:00: fixups for bus
+[    0.268027] pci_bus 0000:00: bus scan returning with max=00
+[    0.274272] clocksource: Switched to clocksource arch_sys_counter
+[    0.281012] thermal_sys: Registered thermal governor 'fair_share'
+[    0.281017] thermal_sys: Registered thermal governor 'bang_bang'
+[    0.287184] thermal_sys: Registered thermal governor 'step_wise'
+[    0.293218] thermal_sys: Registered thermal governor 'user_space'
+[    0.299254] thermal_sys: Registered thermal governor 'power_allocator'
+[    0.305642] NET: Registered protocol family 2
+[    0.316656] IP idents hash table entries: 8192 (order: 4, 65536 bytes, linear)
+[    0.324454] tcp_listen_portaddr_hash hash table entries: 256 (order: 0, 4096 bytes, linear)
+[    0.332856] TCP established hash table entries: 4096 (order: 3, 32768 bytes, linear)
+[    0.340754] TCP bind hash table entries: 4096 (order: 4, 65536 bytes, linear)
+[    0.347974] TCP: Hash tables configured (established 4096 bind 4096)
+[    0.354432] UDP hash table entries: 256 (order: 1, 8192 bytes, linear)
+[    0.360998] UDP-Lite hash table entries: 256 (order: 1, 8192 bytes, linear)
+[    0.368110] NET: Registered protocol family 1
+[    0.372507] PCI: CLS 0 bytes, default 64
+[    0.378876] workingset: timestamp_bits=46 max_order=17 bucket_order=0
+[    0.388384] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+[    0.394248] jffs2: version 2.2 (NAND) (SUMMARY) (LZMA) (RTIME) (CMODE_PRIORITY) (c) 2001-2006 Red Hat, Inc.
+[    0.417456] phy phy-usb-phy@11e10000.1: type_sw - reg 0x218, index 0
+[    0.432867] Serial: 8250/16550 driver, 3 ports, IRQ sharing disabled
+[    0.440037] printk: console [ttyS0] disabled
+[    0.464452] 11002000.serial: ttyS0 at MMIO 0x11002000 (irq = 12, base_baud = 2500000) is a ST16650V2
+[    0.473657] printk: console [ttyS0] enabled
+[    0.473657] printk: console [ttyS0] enabled
+[    0.482017] printk: bootconsole [uart8250] disabled
+[    0.482017] printk: bootconsole [uart8250] disabled
+[    0.492406] cacheinfo: Unable to detect cache hierarchy for CPU 0
+[    0.500841] loop: module loaded
+[    0.504107] mediatek,mt2701-ice_debug ice_debug: get dbg_sel clock fail: -2
+[    0.511102] mediatek,mt2701-ice_debug: probe of ice_debug failed with error -2
+[    0.519142] mt7981-pinctrl 11d00000.pinctrl: pin_config_set op failed for pin 19
+[    0.526546] mtk-spi 1100a000.spi: Error applying setting, reverse things back
+[    0.534292] spi-nand spi0.0: GigaDevice SPI NAND was found.
+[    0.539859] spi-nand spi0.0: 128 MiB, block size: 128 KiB, page size: 2048, OOB size: 64
+[    0.548180] 11 fixed-partitions partitions found on MTD device spi0.0
+[    0.554672] Creating 11 MTD partitions on "spi0.0":
+[    0.559540] 0x000000000000-0x000000200000 : "boot"
+[    0.566282] 0x000000200000-0x000000300000 : "u-boot-env"
+[    0.572840] 0x000000300000-0x000002d00000 : "ubi0"
+[    0.579241] random: fast init done
+[    0.611067] 0x000002d00000-0x000005700000 : "ubi1"
+[    0.646566] 0x000005700000-0x000005800000 : "radio"
+[    0.652691] 0x000005800000-0x000006100000 : "factory_data"
+[    0.664849] 0x000006100000-0x000007200000 : "runtime_data"
+[    0.682361] 0x000000000000-0x000007f80000 : "wholeflash"
+[    0.697620] 0x000000200000-0x000000300000 : "nvram"
+[    0.702989] 0x000000300000-0x000002d00000 : "rootfs_1"
+[    0.708722] 0x000002d00000-0x000005700000 : "backup"
+[    0.715273] libphy: Fixed MDIO Bus: probed
+[    0.720042] [mtk_hw_init] reset_lock:0, force:0
+[    0.724616] [mtk_hw_init] execute fe cold reset
+[    0.740206] [mtk_probe] : phy_driver : gpy211
+[    0.740271] phylink_parse_mode_phy check phy-link speed:2500 duplex:1
+[    0.764793] libphy: mdio: probed
+[    0.774835] mtk_soc_eth 15100000.ethernet: generated random MAC address 0a:fc:8a:12:9c:25
+[    0.783298] mtk_soc_eth 15100000.ethernet eth0: mediatek frame engine at 0xffffffc011780000, irq 75
+[    0.792402] mtk_soc_eth 15100000.ethernet: generated random MAC address 46:f9:20:64:ef:9b
+[    0.800865] mtk_soc_eth 15100000.ethernet eth1: mediatek frame engine at 0xffffffc011780000, irq 75
+[    0.809913] (unnamed net_device) (dummy): netif_napi_add() called with weight 256
+[    0.817739] xhci-mtk 11200000.xhci: 11200000.xhci supply vbus not found, using dummy regulator
+[    0.826393] xhci-mtk 11200000.xhci: 11200000.xhci supply vusb33 not found, using dummy regulator
+[    0.835506] xhci-mtk 11200000.xhci: xHCI Host Controller
+[    0.840822] xhci-mtk 11200000.xhci: new USB bus registered, assigned bus number 1
+[    0.851328] xhci-mtk 11200000.xhci: hcc params 0x01403f99 hci version 0x110 quirks 0x0000000000210010
+[    0.860575] xhci-mtk 11200000.xhci: irq 85, io mem 0x11200000
+[    0.866818] hub 1-0:1.0: USB hub found
+[    0.870583] hub 1-0:1.0: 1 port detected
+[    0.874745] xhci-mtk 11200000.xhci: xHCI Host Controller
+[    0.880053] xhci-mtk 11200000.xhci: new USB bus registered, assigned bus number 2
+[    0.887545] xhci-mtk 11200000.xhci: Host supports USB 3.2 Enhanced SuperSpeed
+[    0.894746] usb usb2: We don't know the algorithms for LPM for this host, disabling LPM.
+[    0.903165] hub 2-0:1.0: USB hub found
+[    0.906954] hub 2-0:1.0: 1 port detected
+[    0.911324] usbcore: registered new interface driver uas
+[    0.916731] usbcore: registered new interface driver usb-storage
+[    0.922824] i2c /dev entries driver
+[    0.927174] mtk-wdt 1001c000.watchdog: Watchdog enabled (timeout=31 sec, nowayout=0)
+[    0.935181] device-mapper: ioctl: 4.41.0-ioctl (2019-09-16) initialised: dm-devel@redhat.com
+[    0.944812] crypto-safexcel 10320000.crypto: EIP97:230(0,1,4,4)-HIA:270(0,5,5),PE:150/433,alg:7fcdfc00
+[    0.957298] exFAT: Version 1.3.0
+[    0.961997] GACT probability on
+[    0.965160] Mirror/redirect action on
+[    0.968817] u32 classifier
+[    0.971511]     input device check on
+[    0.975178]     Actions configured
+[    0.978668] gre: GRE over IPv4 demultiplexor driver
+[    0.983532] ip_gre: GRE over IPv4 tunneling driver
+[    0.989263] Initializing XFRM netlink socket
+[    0.993886] NET: Registered protocol family 10
+[    0.998495] [eth_name_init] eth_name : eth1 eth2 eth3
+[    0.999332] [eth_name_init] eth_name : eth1 eth2 eth3
+[    1.004458] Segment Routing with IPv6
+[    1.013670] NET: Registered protocol family 17
+[    1.018236] [eth_name_init] eth_name : eth1 eth2 eth3
+[    1.018254] Bridge firewalling registered
+[    1.027407] 8021q: 802.1Q VLAN Support v1.8
+[    1.249162] mt7531_setup reg:2104 mcr_cur:2000
+[    1.253767] mt7531_setup [change]reg:2104 mcr_cur:2470
+[    1.258981] mt7531_setup reg:2204 mcr_cur:2000
+[    1.263580] mt7531_setup [change]reg:2204 mcr_cur:2470
+[    1.270353] libphy: dsa slave smi: probed
+[    1.275259] mt7530 mdio-bus:1f eth2 (uninitialized): PHY [dsa-0.0:01] driver [Generic PHY]
+[    1.284816] mt7530 mdio-bus:1f eth3 (uninitialized): PHY [dsa-0.0:02] driver [Generic PHY]
+[    1.293709] mt7530 mdio-bus:1f: configuring for fixed/2500base-x link mode
+[    1.300878] DSA: tree 0 setup
+[    1.301121] mt7530 mdio-bus:1f: Link is Up - 2.5Gbps/Full - flow control rx/tx
+[    1.304036] ubi0: attaching mtd3
+[    1.428829] ubi0: scanning is finished
+[    1.437090] ubi0: attached mtd3 (name "ubi1", size 42 MiB)
+[    1.442568] ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+[    1.449441] ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+[    1.456223] ubi0: VID header offset: 2048 (aligned 2048), data offset: 4096
+[    1.463168] ubi0: good PEBs: 336, bad PEBs: 0, corrupted PEBs: 0
+[    1.469166] ubi0: user volume: 3, internal volumes: 1, max. volumes count: 128
+[    1.476377] ubi0: max/mean erase counter: 1/0, WL threshold: 4096, image sequence number: 31924003
+[    1.485322] ubi0: available PEBs: 66, total reserved PEBs: 270, PEBs reserved for bad PEB handling: 20
+[    1.494621] ubi0: background thread "ubi_bgt0d" started, PID 777
+[    1.581110] random: crng init done
+[    3.780184] block ubiblock0_2: created from ubi0:2(rootfs)
+[    3.785677] ubiblock: device ubiblock0_2 (rootfs) set to be root filesystem
+[    3.792627] hctosys: unable to open rtc device (rtc0)
+[    3.798263] UBIFS (ubi0:2): static UBI volume - read-only mode
+[    3.804095] UBIFS error (ubi0:2 pid 1): ubifs_mount: cannot mount read-write - read-only media
+[    3.814396] VFS: Mounted root (squashfs filesystem) readonly on device 253:0.
+[    3.821722] Freeing unused kernel memory: 448K
+[    3.864306] Run /etc/preinit as init process
+[    4.237178] init: Console is alive
+[    4.240672] init: - watchdog -
+[    5.244156] init: - preinit -
+Press the [f] key and hit [enter] to enter failsafe mode
+Before mount_root
+mounting /dev/root
+kmod: ran 1 iterations
+[    7.066182] block: attempting to load /etc/config/fstab
+[    7.096340] block: extroot: not configured
+cp: can't stat '/www/tmp/': No such file or directory
+mount: mount point /www/tmp/ does not exist
+cp: can't st[    7.604855] procd: - early -
+at '/tmp/tmp_tmp[    7.608132] procd: - watchdog -
+/*': No such file or directory
+After mount_root
+[    8.161617] procd: - ubus -
+[    9.167323] procd: - init -
+(none) login: [    9.247963] ubi1: attaching mtd5
+[    9.275464] ubi1: scanning is finished
+[    9.283590] ubi1: attached mtd5 (name "factory_data", size 9 MiB)
+[    9.289693] ubi1: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+[    9.296564] ubi1: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+[    9.303335] ubi1: VID header offset: 2048 (aligned 2048), data offset: 4096
+[    9.310285] ubi1: good PEBs: 72, bad PEBs: 0, corrupted PEBs: 0
+[    9.316194] ubi1: user volume: 1, internal volumes: 1, max. volumes count: 128
+[    9.323400] ubi1: max/mean erase counter: 3/1, WL threshold: 4096, image sequence number: 354258372
+[    9.332432] ubi1: available PEBs: 0, total reserved PEBs: 72, PEBs reserved for bad PEB handling: 20
+[    9.341558] ubi1: background thread "ubi_bgt1d" started, PID 1015
+ubi_factory_data found, mounting...
+[    9.376758] UBIFS (ubi1:0): Mounting in unauthenticated mode
+[    9.382490] UBIFS (ubi1:0): background thread "ubifs_bgt1_0" started, PID 1021
+[    9.410309] UBIFS (ubi1:0): recovery needed
+[    9.478776] UBIFS (ubi1:0): recovery completed
+[    9.483265] UBIFS (ubi1:0): UBIFS: mounted UBI device 1, volume 0, name "ubi_factory_data"
+[    9.491535] UBIFS (ubi1:0): LEB size: 126976 bytes (124 KiB), min./max. I/O unit sizes: 2048 bytes/2048 bytes
+[    9.501443] UBIFS (ubi1:0): FS size: 4825088 bytes (4 MiB, 38 LEBs), journal size 1142785 bytes (1 MiB, 9 LEBs)
+[    9.511516] UBIFS (ubi1:0): reserved for root: 0 bytes (0 KiB)
+[    9.517343] UBIFS (ubi1:0): media format: w4/r0 (latest is w5/r0), UUID 1DFB4247-E4ED-4858-9480-E149D4C8FCA7, small LPT model
+[    9.535001] ubi2: attaching mtd6
+[    9.584128] ubi2: scanning is finished
+[    9.592319] ubi2: attached mtd6 (name "runtime_data", size 17 MiB)
+[    9.598517] ubi2: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+[    9.605389] ubi2: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+[    9.612161] ubi2: VID header offset: 2048 (aligned 2048), data offset: 4096
+[    9.619113] ubi2: good PEBs: 136, bad PEBs: 0, corrupted PEBs: 0
+[    9.625110] ubi2: user volume: 1, internal volumes: 1, max. volumes count: 128
+[    9.632316] ubi2: max/mean erase counter: 3/1, WL threshold: 4096, image sequence number: 663086639
+[    9.641348] ubi2: available PEBs: 0, total reserved PEBs: 136, PEBs reserved for bad PEB handling: 20
+[    9.650560] ubi2: background thread "ubi_bgt2d" started, PID 1029
+ubi_runtime_data found, mounting[    9.663071] UBIFS (ubi2:0): Mounting in unauthenticated mode
+...
+[    9.669048] UBIFS (ubi2:0): background thread "ubifs_bgt2_0" started, PID 1035
+[    9.689976] UBIFS (ubi2:0): recovery needed
+[    9.822434] UBIFS (ubi2:0): recovery completed
+[    9.826979] UBIFS (ubi2:0): UBIFS: mounted UBI device 2, volume 0, name "ubi_runtime_data"
+[    9.835239] UBIFS (ubi2:0): LEB size: 126976 bytes (124 KiB), min./max. I/O unit sizes: 2048 bytes/2048 bytes
+[    9.845148] UBIFS (ubi2:0): FS size: 9904128 bytes (9 MiB, 78 LEBs), journal size 1777664 bytes (1 MiB, 14 LEBs)
+[    9.855310] UBIFS (ubi2:0): reserved for root: 0 bytes (0 KiB)
+[    9.861129] UBIFS (ubi2:0): media format: w4/r0 (latest is w5/r0), UUID 989B13C7-D265-4515-B3CB-2505147A2B80, small LPT model
+[   10.369240] mediatek_soc_hnat 15100000.hnat: wan = eth1
+[   10.374588] mediatek_soc_hnat 15100000.hnat: lan1 = eth2
+[   10.379888] mediatek_soc_hnat 15100000.hnat: lan2 = eth3
+[   10.385194] mediatek_soc_hnat 15100000.hnat: ppd = eth0
+[   10.390406] mediatek_soc_hnat 15100000.hnat: gmac num = 2
+[   10.395795] mediatek_soc_hnat 15100000.hnat: ppe num = 1
+[   10.401575] mediatek_soc_hnat 15100000.hnat: PPE0 entry number = 8192
+[   10.418426] mediatek_soc_hnat 15100000.hnat: PPE0 hwnat start
+[   10.424228] hnat roaming work enable
+[   10.429438] Load statistics in Router Mode
+[   10.433615] ### kmod stats is inited, register the function tp_stats_update ###
+[   10.441020] module inited
+[   10.450974] ntfs: driver 2.1.32 [Flags: R/O MODULE].
+[   10.461015] NET: Registered protocol family 15
+[   10.467401] PPP generic driver version 2.4.2
+[   10.473756] tun: Universal TUN/TAP device driver, 1.6
+[   10.479520] PPP MPPE Compression module registered
+[   10.486139] l2tp_core: L2TP core driver, V2.0
+[   10.491116] l2tp_netlink: L2TP netlink interface
+[   10.496637] sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
+[   10.508169] tipc: Activated (version 2.0.0)
+[   10.512440] NET: Registered protocol family 30
+[   10.517005] tipc: Started in single node mode
+[   10.525356] Ethernet Channel Bonding Driver: v3.7.1 (April 27, 2011)
+[   10.539803] NET: Registered protocol family 24
+[   10.548702] Tpbr multicast installation successfully
+[   10.554858] PPTP driver version 0.8.5
+[   10.568925] l2tp_ppp: PPPoL2TP kernel driver, V2.0
+[   10.591648] xt_CHECKPORTS: module license 'Proprietary' taints kernel.
+[   10.598227] Disabling lock debugging due to kernel taint
+[   10.636651] fuse: init (API version 7.31)
+[   10.642792] OpenVPN data channel offload (ovpn-dco) 2.0.0 -- (C) 2020-2023 OpenVPN, Inc.
+[   10.654848] wireguard: enabled KERNEL_MODE_NEON success
+[   10.660347] wireguard: WireGuard 1.0.20211208 loaded. See www.wireguard.com for information.
+[   10.668838] wireguard: Copyright (C) 2015-2019 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
+[   10.694207] device recognition register succes
+[   10.704228] conninfra@(mtk_conninfra_drv_init:644) Before platform_driver_register
+[   10.711957] Get Index(0-TOP_MISC_BASE) phy_addr(0x11d10000) vir_addr=(0xffffffc010b0d000) size=(0x1000)
+[   10.721344] Get Index(1-TOPRGU_BASE) phy_addr(0x1001c000) vir_addr=(0xffffffc010b0f000) size=(0x1000)
+[   10.730550] Get Index(2-GPIO_BASE) phy_addr(0x11d00000) vir_addr=(0xffffffc010b11000) size=(0x1000)
+[   10.739584] Get Index(3-IOCFG_TR_BASE) phy_addr(0x11f00000) vir_addr=(0xffffffc010b17000) size=(0x1000)
+[   10.748964] Get Index(4-IOCFG_TL_BASE) phy_addr(0x11f10000) vir_addr=(0xffffffc010b19000) size=(0x1000)
+[   10.758344] Get Index(5-INFRACFG_AO_BASE) phy_addr(0x10003000) vir_addr=(0xffffffc010b2d000) size=(0x1000)
+[   10.767983] Get Index(6-CONN_INFRA_CFG_BASE) phy_addr(0x18001000) vir_addr=(0xffffffc010b2f000) size=(0x1000)
+[   10.777883] Get Index(7-CONN_INFRA_SYSRAM_BASE) phy_addr(0x18050000) vir_addr=(0xffffffc010b31000) size=(0x1000)
+[   10.788044] Get Index(8-CONN_INFRA_CLKGEN_ON_TOP_BASE) phy_addr(0x18009000) vir_addr=(0xffffffc010b33000) size=(0x1000)
+[   10.798812] Get Index(9-CONN_HOST_CSR_TOP_BASE) phy_addr(0x18060000) vir_addr=(0xffffffc010b9d000) size=(0x1000)
+[   10.808971] Get Index(10-CONN_INFRA_BUS_CR_BASE) phy_addr(0x1800e000) vir_addr=(0xffffffc010b9f000) size=(0x1000)
+[   10.819218] Get Index(11-CONN_INFRA_RGU_BASE) phy_addr(0x18000000) vir_addr=(0xffffffc010ba1000) size=(0x1000)
+[   10.829205] Get Index(12-CONN_WT_SLP_CTL_REG_BASE) phy_addr(0x18005000) vir_addr=(0xffffffc010ba3000) size=(0x1000)
+[   10.839625] Get Index(13-INST2_CONN_WT_SLP_CTL_REG_BASE) phy_addr(0x18085000) vir_addr=(0xffffffc010ba5000) size=(0x1000)
+[   10.850566] Get Index(14-CONN_RF_SPI_MST_REG_BASE) phy_addr(0x18004000) vir_addr=(0xffffffc010ba7000) size=(0x1000)
+[   10.860985] Get Index(15-INST2_CONN_RF_SPI_MST_REG_BASE) phy_addr(0x18084000) vir_addr=(0xffffffc010ba9000) size=(0x1000)
+[   10.871928] Get Index(16-CONN_SEMAPHORE_BASE) phy_addr(0x18070000) vir_addr=(0xffffffc010f10000) size=(0x10000)
+[   10.882002] Get Index(17-CONN_AFE_CTL_BASE) phy_addr(0x18003000) vir_addr=(0xffffffc010bab000) size=(0x1000)
+[   10.891816] Get Index(18-CONN_AFE_CTL_2ND_BASE) phy_addr(0x18083000) vir_addr=(0xffffffc010bad000) size=(0x1000)
+[   10.901976] Get Index(19-WF_TOP_SLPPROT_ON_BASE) phy_addr(0x184c0000) vir_addr=(0xffffffc010f30000) size=(0x10000)
+[   10.912311] Get Index(20-WF_TOP_CFG_BASE) phy_addr(0x184b0000) vir_addr=(0xffffffc010bb5000) size=(0x1000)
+[   10.921951] Get Index(21-WF_MCU_CONFIG_LS_BASE) phy_addr(0x184f0000) vir_addr=(0xffffffc010bb7000) size=(0x1000)
+[   10.932117] Get Index(22-WF_MCU_BUS_CR_BASE) phy_addr(0x18400000) vir_addr=(0xffffffc010bb9000) size=(0x1000)
+[   10.942017] Get Index(23-WF_MCUSYS_INFRA_BUS_FULL_U_DEBUG_CTRL_AO_BASE) phy_addr(0x18500000) vir_addr=(0xffffffc010bbb000) size=(0x1000)
+[   10.954262] Get Index(24-WF_TOP_CFG_ON_BASE) phy_addr(0x184c0000) vir_addr=(0xffffffc0110c0000) size=(0x10000)
+[   10.964243] conninfra@(consys_plt_hw_init:162) adie_cfg_type = 1, one_adie_dbdc = 1
+[   10.971892] [emi_mng_init] gConEmiPhyBase = [0x47c80000] size = [0x100000] fw size = [0x100000] ops=[0000000005d311f4]
+[   10.982690] conninfra@(mtk_conninfra_drv_init:650) After platform_driver_register
+[   10.990667] ConnInfra Dev: init (0)
+[   10.995592] conninfra@(_consys_polling_chipid_int:306) Read CONNSYS HW IP version successfully! (0x02090000)
+[   11.005414] conninfra@(connsys_d_die_cfg:365) D-die efuse: 0x00000000
+[   11.012865] conninfra@(_connsys_a_die_cfg_7976:909) adie_idx[0], A-die CHIP ID = 0x7976, HW Version = 0x8b00
+[   11.023683] conninfra@(consys_spi_write_nolock:501) addr=0x0a00, val=0xffffffff
+[   11.031986] conninfra@(consys_spi_write_nolock:501) addr=0x04ac, val=0x0000001c
+[   11.040288] conninfra@(consys_spi_write_nolock:501) addr=0x0144, val=0x00000002
+[   11.049601] conninfra@(consys_spi_write_nolock:501) addr=0x0148, val=0x00000000
+[   11.058914] conninfra@(consys_spi_write_nolock:501) addr=0x0148, val=0x43a60000
+[   11.072254] conninfra@(connsys_a_die_efuse_read_nolock:737) efuse = [0x00000001, 0x00c40000, 0x008500be, 0x00000000]
+[   11.083765] conninfra@(consys_spi_write_nolock:501) addr=0x0144, val=0x00000002
+[   11.093073] conninfra@(consys_spi_write_nolock:501) addr=0x0148, val=0x23a6003a
+[   11.102382] conninfra@(consys_spi_write_nolock:501) addr=0x0148, val=0x63a7003a
+[   11.115722] conninfra@(connsys_a_die_efuse_read_nolock:737) efuse = [0x00000001, 0x00c40000, 0x008500be, 0x00000000]
+[   11.127233] conninfra@(consys_spi_write_nolock:501) addr=0x0144, val=0x00000002
+[   11.136542] conninfra@(consys_spi_write_nolock:501) addr=0x0148, val=0x23a7003a
+[   11.145847] conninfra@(consys_spi_write_nolock:501) addr=0x0148, val=0x63ac003a
+[   11.159182] conninfra@(connsys_a_die_efuse_read_nolock:737) efuse = [0x00000001, 0x00c40000, 0x008500be, 0x00000000]
+[   11.170693] conninfra@(consys_spi_write_nolock:501) addr=0x0038, val=0x4a563b00
+[   11.178995] conninfra@(consys_spi_write_nolock:501) addr=0x065c, val=0x1d59080f
+[   11.187297] conninfra@(consys_spi_write_nolock:501) addr=0x0664, val=0x34c00fe0
+[   11.195602] conninfra@(consys_spi_write_nolock:501) addr=0x0070, val=0x88888005
+[   11.204858] conninfra@(consys_spi_write_nolock:501) addr=0x0070, val=0x00000005
+[   11.213089] conninfra@(_consys_polling_chipid_int:306) Read CONNSYS HW IP version successfully! (0x02090000)
+[   11.222909] conninfra@(_consys_hw_conninfra_wakeup:470) conninfra_wakeup refcnt=[0]->[1] wakeup!!
+[   11.231772] conninfra@(_consys_hw_conninfra_sleep:490) conninfra_sleep refcnt=[1]->[0] sleep!!
+[   11.240371] conninfra@(opfunc_power_on_internal:241) [Conninfra Pwr On] BT=[0] FM=[0] GPS=[0] WF=[0] CONNINFRA=[1]
+[   12.435700] conninfra@(conninfra_pwr_on:120) [conninfra_pwr_on] drv=[3]
+[   12.443254] conninfra@(_consys_polling_chipid_int:306) Read CONNSYS HW IP version successfully! (0x02090000)
+[   12.461128] \x1B[1;32mAdie Type: 0x7976\x1B[0m
+[   12.461130] \x1B[1;32mSKU Type: 3000\x1B[0m
+[   12.465047] conninfra@(opfunc_power_on_internal:241) [Conninfra Pwr On] BT=[0] FM=[0] GPS=[0] WF=[1] CONNINFRA=[1]
+[   12.479139] WiFi@C12L1,get_dbg_setting_by_profile() 4560: debug level setting=INDEX0_debug_level not found!!
+[   12.488991] WiFi@C12L1,get_dbg_setting_by_profile() 4583: debug option setting=INDEX0_debug_option not found!!
+[   12.499052] mt_rbus 0000:00:00.0: runtime IRQ mapping not provided by arch
+[   12.514322] mt7981_init()-->
+[   12.517199] Use the default iPAiLNA bin image!
+[   12.521675] <--mt7981_init()
+[   12.524578] RtmpRaDevCtrlInit(): MCS_LUT not used becasue MacTb size(288) > 128!
+[   12.532074] WiFi@C12L1,match_index_by_chipname() 566: not find chip name INDEX1
+[   12.539394] WiFi@C12L1,match_index_by_chipname() 566: not find chip name INDEX2
+[   12.546708] WiFi@C12L1,match_index_by_chipname() 566: not find chip name INDEX3
+[   12.554017] WiFi@C12L1,match_index_by_chipname() 566: not find chip name INDEX4
+[   12.561334] WiFi@C12L1,match_index_by_chipname() 566: not find chip name INDEX5
+[   12.568646] WiFi@C12L1,match_index_by_chipname() 566: not find chip name INDEX6
+[   12.575960] WiFi@C12L1,match_index_by_chipname() 566: not find chip name INDEX7
+[   12.583269] WiFi@C12L1,match_index_by_chipname() 566: not find chip name INDEX8
+[   12.590583] WiFi@C12L1,match_index_by_chipname() 566: not find chip name INDEX9
+[   12.597882] WiFi@C12L2,match_index_by_chipname() 571: Not find slot id, back to old rule.
+[   12.606158] msta_ifname not found
+[   12.628727] warp_module_init(): module init and register callback for warp
+[   12.635665] create warp_ctrl ok!!!
+[   12.639109] wed_get_slot_map(): assign slot_id:0 for entry: 0!
+[   12.644970] wed_get_slot_map(): assign slot_id:1 for entry: 1!
+[   12.651676] mtk_warp_proxy: module uses symbols from proprietary module mt_wifi, inheriting taint.
+[NM_Error](nvrammanager_readPtnFromNvram) 00584: partition name(autoconfig_flag) not found.
+
+ 
+Read autoconfig_flag: 
+reloadprofile() begin
+merge profile by country_special_id
+filename: profile
+option !!!!!!!!!!!!
+WARNING: Cursor.commit_without_write_flash IS DEPRECATED!
+merge end
+=== merge_condition_config begin
+data is profile.d
+path is /etc
+my info: X55.3.0 DE.45550000
+checking COND_CFG_MODEL-X50-POE.2.0_HB6300-POE.2.0
+checking COND_CFG_MODEL-X50.3.0_X55.3.0_X3000.3.0
+merge COND_CFG_MODEL_ALL
+cfg_dir_list: ["profile.d"]
+r_path: /etc/COND_CFG_MODEL-X50.3.0_X55.3.0_X3000.3.0/COND_CFG_MODEL_ALL/profile.d
+w_path: /etc/profile.d
+merge profile.d/multi_prd_support
+changed! option: cfg_name X50_3_0_0
+changed! option: cfg_name_suffix X50_3_0_0
+changed! option: enable 0
+changed! option: type_mt7981 1
+changed! option: type_mt7531 2
+ret=true, changed=true
+merge profile.d/interfaces
+changed! option: type eth
+changed! option: name eth3
+changed! option: port 2
+changed! option: max_speed 1000
+changed! option: diag_speed 1000
+changed! option: type eth
+changed! option: name eth2
+changed! option: port 1
+changed! option: max_speed 1000
+changed! option: diag_speed 1000
+changed! option: type eth
+changed! option: name[   14.077990] [TRK module]driver derive_key ok
+[   14.077992] [TRK module]driver derive_key ok
+ eth1
+changed! [   14.078047] [TRK module]driver derive_key close ok
+option: port 0
+[   14.083435] [TRK module]driver derive_key close ok
+changed! option: max_speed 1000
+changed! option: diag_speed 1000
+changed! option: name wifi0
+changed! option: name wifi1
+ret=true, changed=true
+merge profile.d/profile
+changed! option: eth_port_num 3
+changed! option: rUpband 1024000
+changed! option: rDownband 1024000
+changed! option: up_band_max 1024000
+changed! option: down_band_max 1024000
+changed! option: phy_port_1 2
+changed! option: logic_port_1 3
+changed! option: phy_port_2 1
+changed! option: logic_port_2 2
+changed! option: phy_port_3 0
+changed! option: logic_port_3 1
+changed! option: left_up_port_name eth3
+changed! option: left_up_port 2
+changed! option: right_down_port 0
+ret=true, changed=true
+=== merge_condition_config end
+reloadprofile() end
+==reloadConfig()== begin
+  ==loadDefaultConfig()== begin
+  ==loadConfigToFiles(): default-config to /tmp/defaultconfig== begin
+  ==loadConfigToFiles()== end
+=== merge_condition_config begin
+data is default-config
+path is /tmp/defaultconfig
+my info: X55.3.0 DE.45550000
+checking COND_CFG_MODEL-X50-POE.2.0_HB6300-POE.2.0
+checking COND_CFG_MODEL-X50.3.0_X55.3.0_X3000.3.0
+merge COND_CFG_MODEL_ALL
+cfg_dir_list: ["config"]
+r_path: /tmp/defaultconfig/COND_CFG_MODEL-X50.3.0_X55.3.0_X3000.3.0/COND_CFG_MODEL_ALL/config
+w_path: /tmp/defaultconfig/config
+merge config/iot_wifi
+changed! option: ethiface eth0 eth1 eth2
+ret=true, changed=true
+merge config/wifi
+changed! option: ethiface eth1 eth2 eth3
+ret=true, changed=true
+merge config/network_sync
+changed! option: hostname deco_X50
+ret=true, changed=true
+merge config/network
+changed! option: name eth2
+changed! option: enabled 1
+changed! option: name eth3
+changed! option: enabled 1
+changed! option: ifname eth1 eth2 eth3
+ret=true, changed=true
+merge config/iptv
+changed! option: wan eth1
+changed! option: lan eth2
+ret=true, changed=true
+merge config/qos_v2
+changed! option: up_band_max 1024000
+changed! option: down_band_max 1024000
+ret=true, changed=true
+=== merge_condition_config end
+[NM_Error](nvrammanager_readPtnFromNvram) 00584: partition name(isp-flag) not found.
+
+ 
+  ==set_usrconfig_info()== start
+  ==set_usrconfig_info()== end
+merge default-config by country_special_id
+merge end
+  ==loadDefaultConfig()== end
+/tmp/fileversion_new.xml open err
+  ==loadConfigToFiles(): user-config to /tmp/userconfig== begin
+[   14.588559] [TRK module]driver derive_key ok
+[   14.589964] [TRK module]driver derive_key ok
+[   14.592875] [TRK module]driver derive_key close ok
+[   14.597189] [TRK module]driver derive_key close ok
+  ==loadConfigToFiles()== end
+==reloadConfig()===== no need to load emmc-config
+  ==loadConfigToFiles(): device-config to /tmp/userconfig== begin
+[   14.783354] [TRK module]driver derive_key ok
+[   14.783693] [TRK module]driver derive_key ok
+[   14.787745] [TRK module]driver derive_key close ok
+[   14.791976] [TRK module]driver derive_key close ok
+  ==loadConfigToFiles()== end
+  ** user-config loaded **
+==reloadConfig()== end
+merge_extra_config() begin
+  ==loadConfigToFiles(): default-config to /tmp/merge== begin
+[   15.066617] [TRK module]driver derive_key ok
+[   15.069952] [TRK module]driver derive_key ok
+[   15.070935] [TRK module]driver derive_key close ok
+[   15.075256] [TRK module]driver derive_key close ok
+  ==loadConfigToFiles()== end
+=== merge_condition_config begin
+data is default-config
+path is /tmp/merge
+my info: X55.3.0 DE.45550000
+checking COND_CFG_MODEL-X50-POE.2.0_HB6300-POE.2.0
+checking COND_CFG_MODEL-X50.3.0_X55.3.0_X3000.3.0
+merge COND_CFG_MODEL_ALL
+cfg_dir_list: ["config"]
+r_path: /tmp/merge/COND_CFG_MODEL-X50.3.0_X55.3.0_X3000.3.0/COND_CFG_MODEL_ALL/config
+w_path: /tmp/merge/config
+merge config/iot_wifi
+changed! option: ethiface eth0 eth1 eth2
+ret=true, changed=true
+merge config/wifi
+changed! option: ethiface eth1 eth2 eth3
+ret=true, changed=true
+merge config/network_sync
+changed! option: hostname deco_X50
+ret=true, changed=true
+merge config/network
+changed! option: name eth2
+changed! option: enabled 1
+changed! option: name eth3
+changed! option: enabled 1
+changed! option: ifname eth1 eth2 eth3
+ret=true, changed=true
+merge config/iptv
+changed! option: wan eth1
+changed! option: lan eth2
+ret=true, changed=true
+merge config/qos_v2
+changed! option: up_band_max 1024000
+changed! option: down_band_max 1024000
+ret=true, changed=true
+=== merge_condition_config end
+mergeconfigbycountry() begin
+mergeconfigbycountry() country DE
+mergeconfigbycountry() end
+merge_extra_config() end
+[check_config_name] check success, normally boot!!!!!!
+phylink down boot 1
+### boot disable all ipv6
+[   15.775100] mtk_soc_eth 15100000.ethernet eth1: PHY [mdio-bus:00] driver [Generic PHY]
+[   15.786701] mtk_soc_eth 15100000.ethernet eth1: configuring for phy/gmii link mode
+[   15.840609] mtk_soc_eth 15100000.ethernet eth1: PHY [mdio-bus:00] driver [Generic PHY]
+[   15.852250] mtk_soc_eth 15100000.ethernet eth1: configuring for phy/gmii link mode
+===================== network reload  =========================
+vpn client is off
+crond[2169]: crond: crond (busybox 1.22.1) started, log level 5
+vpn client is off
+to down eth0/1 after netfid
+backhual_vap_2g:ra0
+backhual_vap_5g:rax0
+config_vap_2g:ra1
+config_vap_5g:rax1
+main_vap_2g:ra2
+main_vap_5g:rax2
+country:DE regulatory:EU
+***productType:X50 special_id:45550000 hw_ver:****
+role_old:() role_new:(RE)
+awnd logs on /dev/console!
+[AWN:E][awnd_init:10213]: awnd_init-10213 l_awnd_config.ethIfCnt[3]
+[AWN:E][awnd_init:10219]: ethIfnames:eth3 i[0]
+[AWN:E][awnd_init:10219]: ethIfnames:eth2 i[1]
+[AWN:E][awnd_init:10219]: ethIfnames:eth1 i[2]
+[AWN:E][_parse_config:802]: Unknown name: eth_wlan_support
+[AWN:E][awnd_read_config:2950]: band_num:2 sp_5g_2:0 sp_6g:0 sp_6g_2:0         band5g2_type:5 band6gtype:5 band6g2type:5 band3type:5 band4type:5 band5type:5
+[AWN:E][_get_wifix_name_from_profile:2653]: ptr interfaces: element type is not option:2
+[AWN:E][_get_wifix_name_from_profile:2653]: ptr interfaces: element type is not option:2
+[AWN:E][_get_wifix_name_from_profile:2653]: ptr interfaces: element type is not option:2
+[AWN:N][awnd_init:10307]: l_mac_prefer :00-00-00-00-00-00
+[AWN:E][awnd_init:10323]: plc backhaul can not be enable without plc_attached
+[AWN:E][awnd_init:10325]: backhaul_option:1
+[AWN:E][awnd_init:10336]: wifi backhaul is enable
+[AWN:W][awnd_config_restore_sta_config:1409]: Restored STA config for band 0: BSSID=<redacted> Channel=3
+[AWN:W][awnd_config_restore_sta_config:1409]: Restored STA config for band 1: BSSID=<redacted> Channel=44
+[AWN:W][awnd_init:10460]: =========== to connect old rootap=============> 
+[phylinkdown] set port 2 link down up
+[phylinkdown] set port 1 link down up
+[phylinkdown] set port 0 link down up
+whc (repacd): stop repacd-run.sh
+whc (repacd): get whc_wifi_config_lock
+=========Fix default enable =========
+
+repacd boot: awn will call repacd restart when enabled:1 
+whc (repacd): Start:
+whc (repacd): GatewayConnectedMode(gwcon_mode): RE
+whc (repacd): TrafficSeparationEnabled(traffic_separation_enabled): 1
+whc (repacd): starting WHC auto-configuration
+whc (repacd): Managed network: lan
+whc (repacd): Device type: RE
+whc (repacd): Sysmode: Router
+whc (repacd): the guest network version of the device is latest, we do nothing(uci_revert_state wifi guest enable)
+generate_wifi_vap_list result: ra2 rax2 ra4 rax4 ra0 rax0 apcli0 apclix0 ra1 rax1 ra3 rax3 ra5 rax5
+vaplist:
+devlist:wifi0,wifi1
+notify app-dpi than LAN IP change
+[NM_Error](nvrammanager_readPtnFromNvram) 00609: partition pin is empty
+
+ 
+[NM_Error](nvrammanager_readPtnFromNvram) 00609: partition pin is empty
+
+ 
+whc (repacd): wifi config change(is different from /var/state/wifi). wifi_cmd:reload wifi0,wifi1
+whc (repacd): Using SON mode for NonCAP
+we start to reconfig here now
+whc (repacd): __repacd_restart_dependencies: Restarting network stack...
+wifi reload
+nothing to be done for pre_ralinkwifi disable 
+scan_ralinkwifi config_set vif(ra0) vifname() mode(ap)
+scan_ralinkwifi append mode(ap) vif(ra0) 
+scan_ralinkwifi config_set vif(ra2) vifname() mode(ap)
+scan_ralinkwifi append mode(ap) vif(ra2) 
+scan_ralinkwifi config_set vif(apcli0) vifname() mode(sta)
+scan_ralinkwifi append mode(sta) vif(apcli0) 
+disable_ralinkwifi DRIVERS(ralinkwifi) device(wifi0) vifs(ra0 ra1 ra2 ra3 ra4 ra5 apcli0)
+scan_ralinkwifi config_set vif(rax0) vifname() mode(ap)
+scan_ralinkwifi append mode(ap) vif(rax0) 
+scan_ralinkwifi config_set vif(rax2) vifname() mode(ap)
+scan_ralinkwifi append mode(ap) vif(rax2) 
+scan_ralinkwifi config_set vif(apclix0) vifname() mode(sta)
+scan_ralinkwifi append mode(sta) vif(apclix0) 
+disable_ralinkwifi DRIVERS(ralinkwifi) device(wifi1) vifs(rax0 rax1 rax2 rax3 rax4 rax5 apclix0)
+scan_ralinkwifi config_set vif(ra0) vifname() mode(ap)
+scan_ralinkwifi append mode(ap) vif(ra0) 
+scan_ralinkwifi config_set vif(ra2) vifname() mode(ap)
+scan_ralinkwifi append mode(ap) vif(ra2) 
+scan_ralinkwifi config_set vif(apcli0) vifname() mode(sta)
+scan_ralinkwifi append mode(sta) vif(apcli0) 
+enable_ralinkwifi: DRIVERS(ralinkwifi): device(wifi0) vifs(ra0 ra1 ra2 ra3 ra4 ra5 apcli0) vif(ra0) disabled(0)
+ra0 status 
+enable_ralinkwifi: ifconfig ifname(ra0) up
+ra0 status 1
+enable_ralinkwifi: ifconfig ifname(ra0) up 
+enable_ralinkwifi to config vap wirless mode
+iwconfig ra0
+--------Failed to up ra0 and retry--------
+config_vap_mode  device=wifi0 vif=ra0 mode=11axg:HT40 channel=3 txpower=
+iwpriv ra0 set WirelessMode=16
+ra0       set:WirelessMode=16
+iwpriv ra0 set HtBw=1
+ra0       set:HtBw=1
+iwpriv ra0 set HtBssCoex=1
+ra0       set:HtBssCoex=1
+iwpriv ra0 set HtBssCoexApCntThr=1
+ra0       set:HtBssCoexApCntThr=1
+iwpriv ra0 set HtBwAuto=3
+we start to reconfig here now
+ra0       set:HtBwAuto=3
+dhcp6s is not running, delete pid_file: rm /var/run/dhcp6s.pid
+ra0       set:ApChannel=3
+edcca set in profile
+Interface doesn't accept private ioctl...
+set (8BEB): Network is down
+setup_vif_ap vif:ra0 
+setup_vif_ap ra0 status is 1
+iwpriv ra0 set HideSSID=<redacted>
+ra0       set:HideSSID=<redacted>
+iwpriv ra0 set AuthMode=WPA2PSK
+ra0       set:AuthMode=WPA2PSK
+iwpriv ra0 set EncrypType=AES
+ra0       set:EncrypType=AES
+iwpriv ra0 set IEEE8021X=0
+ra0       set:IEEE8021X=0
+iwpriv ra0 set WPAPSK=<redacted>
+ra0       set:WPAPSK=<redacted>
+iwpriv ra0 set DefaultKeyID=<redacted>
+ra0       set:DefaultKeyID=<redacted>
+iwpriv ra0 set RekeyInterval=0
+wanDetect:wifi is setting
+ra0       set:RekeyInterval=0
+iwpriv ra0 set ACLClearAll=1
+ra0       set:ACLClearAll=1
+iwpriv ra0 set ftenable=0
+ra0       set:ftenable=0
+iwpriv ra0 set MaxStaNum=128
+iwpriv ra0 set SSID=<redacted>
+ra0       set:SSID=<redacted>
+iwpriv ra0 set SSID=<redacted>
+ra0       set:SSID=<redacted>
+iwpriv ra0 set NoForwarding=0
+ra0       set:NoForwarding=0
+edcca set in profile
+enable_ralinkwifi: DRIVERS(ralinkwifi): device(wifi1) vifs(rax0 rax1 rax2 rax3 rax4 rax5 apclix0 rax2) vif(ra1) disabled(1)
+enable_ralinkwifi: DRIVERS(ralinkwifi): device(wifi1) vifs(rax0 rax1 rax2 rax3 rax4 rax5 apclix0 rax2) vif(ra2) disabled(0)
+ra2 status 
+enable_ralinkwifi: ifconfig ifname(ra2) up 
+setup_vif_ap vif:ra2 
+setup_vif_ap ra2 status is 1
+ra2       set:ApChannel=3
+iwpriv ra2 set HideSSID=<redacted>
+ra2       set:HideSSID=<redacted>
+iwpriv ra2 set AuthMode=WPA2PSKWPA3PSK
+ra2       set:AuthMode=WPA2PSKWPA3PSK
+iwpriv ra2 set EncrypType=AES
+ra2       set:EncrypType=AES
+iwpriv ra2 set WPAPSK=<redacted>
+ra2       set:WPAPSK=<redacted>
+iwpriv ra2 set RekeyInterval=0
+ra2       set:RekeyInterval=0
+iwpriv ra2 set ACLClearAll=1
+ra2       set:ACLClearAll=1
+iwpriv ra2 set AccessPolicy=2
+ra2       set:AccessPolicy=2
+iwpriv ra2 set ftenable=0
+ra2       set:ftenable=0
+iwpriv ra2 set MaxStaNum=128
+we start to reconfig here now
+iwpriv ra2 set SSID=<redacted>
+notify app-dpi than LAN IPv6 change
+wanDetect:wifi is setting
+ra2       set:SSID=<redacted>
+iwpriv ra2 set SSID=<redacted>
+ra2       set:SSID=<redacted>
+iwpriv ra2 set NoForwarding=0
+ra2       set:NoForwarding=0
+iwpriv ra2 set WscConfMode=7
+ra2       set:WscConfMode=7
+iwpriv ra2 set WscConfStatus=2
+ra2       set:WscConfStatus=2
+edcca set in profile
+enable_ralinkwifi brctl addif brname:br-lan vif(ra2)
+enable_ralinkwifi: DRIVERS(ralinkwifi): device(wifi1) vifs(rax0 rax1 rax2 rax3 rax4 rax5 apclix0 rax2 rax2) vif(ra3) disabled(1)
+enable_ralinkwifi: DRIVERS(ralinkwifi): device(wifi1) vifs(rax0 rax1 rax2 rax3 rax4 rax5 apclix0 rax2 rax2) vif(ra4) disabled(1)
+enable_ralinkwifi: DRIVERS(ralinkwifi): device(wifi1) vifs(rax0 rax1 rax2 rax3 rax4 rax5 apclix0 rax2 rax2) vif(ra5) disabled(1)
+enable_ralinkwifi: DRIVERS(ralinkwifi): device(wifi1) vifs(rax0 rax1 rax2 rax3 rax4 rax5 apclix0 rax2 rax2) vif(apcli0) disabled(0)
+apcli0 status 
+enable_ralinkwifi: ifconfig ifname(apcli0) up 
+setup_vif_sta ifname(apcli0) ssid(<redacted>) bssid(<redacted>) encrytion(psk2+ccmp) password(<redacted>)
+iwpriv apcli0 set ApCliEnable=0
+apcli0    set:ApCliEnable=0
+iwpriv apcli0 set ApCliMWDS=1
+apcli0    set:ApCliMWDS=1
+iwpriv apcli0 set ApCliAuthMode=WPA2PSK
+apcli0    set:ApCliAuthMode=WPA2PSK
+iwpriv apcli0 set ApCliEncrypType=AES
+apcli0    set:ApCliEncrypType=AES
+iwpriv apcli0 set IEEE8021X=0
+apcli0    set:IEEE8021X=0
+iwpriv apcli0 set ApCliWPAPSK=<redacted>
+apcli0    set:ApCliWPAPSK=<redacted>
+iwpriv apcli0 set ApCliSsid=<redacted>
+apcli0    set:ApCliSsid=<redacted>
+iwpriv apcli0 set ApCliBssid=<redacted>
+apcli0    set:ApCliBssid=<redacted>
+iwpriv apcli0 set ApCliEnable=1
+apcli0    set:ApCliEnable=1
+edcca set in profile
+wifi0(ralinkwifi): enable failed
+scan_ralinkwifi config_set vif(rax0) vifname() mode(ap)
+scan_ralinkwifi append mode(ap) vif(rax0) 
+scan_ralinkwifi config_set vif(rax2) vifname() mode(ap)
+scan_ralinkwifi append mode(ap) vif(rax2) 
+scan_ralinkwifi config_set vif(apclix0) vifname() mode(sta)
+scan_ralinkwifi append mode(sta) vif(apclix0) 
+enable_ralinkwifi: DRIVERS(ralinkwifi): device(wifi1) vifs(rax0 rax1 rax2 rax3 rax4 rax5 apclix0) vif(rax0) disabled(0)
+rax0 status 
+wanDetect:wifi is setting
+do nothing in nat_hw_enable
+enable_ralinkwifi: ifconfig ifname(rax0) up
+=== ip addr del 192.168.68.1 dev br-lan start
+rax0 status 1
+enable_ralinkwifi: ifconfig ifname(rax0) up 
+enable_ralinkwifi to config vap wirless mode
+iwconfig rax0
+=== ip addr del 192.168.68.1 dev br-lan end
+--------Failed to up rax0 and retry--------
+config_vap_mode  device=wifi1 vif=rax0 mode=11axa:HT160 channel=44 txpower=
+iwpriv rax0 set WirelessMode=17
+rax0      set:WirelessMode=17
+iwpriv rax0 set HtBw=1
+rax0      set:HtBw=1
+iwpriv rax0 set VhtBw=2
+we start to reconfig here now
+rax0      set:VhtBw=2
+rax0      set:AutoChannelSkipListSetEntry=52;56;60;64;100;104;108;112;116;120;124;128;132;136;140;144;149;153;157;161;165
+[ 6191(lan)] [smartip_get_cfg 305] key:sta_ifnames value:apcli0,apclix0
+ 
+[ 6191(lan)] [smartip_get_cfg 305] key:lan_ifnames value:ra2,rax2
+ 
+[ 6191(lan)] [smartip_get_cfg 305] key:guest_ifnames value:ra4,rax4
+ 
+[ 6191(lan)] [smartip_get_cfg 305] key:backhaul_ifnames value:ra0,rax0
+ 
+[ 6191(lan)] [smartip_get_cfg 305] key:config_ifnames value:ra1,rax1
+ 
+[ 6191(lan)] [smartip_get_cfg 305] key:default_ifnames value:ra3,rax3
+ 
+[ 6191(lan)] [smartip_get_cfg 305] key:gw value:192.168.35.1
+ 
+[ 6191(lan)] [smartip_get_cfg 305] key:lanip value:192.168.35.1
+ 
+[ 6191(lan)] [smartip_get_cfg 305] key:lantype value:1
+ 
+[ 6191(lan)] [smartip_get_cfg 305] key:mask value:255.255.255.0
+ 
+timestamp 1774746000
+[ 6191(lan)] [smartip_init_status 3296] recovery lan static route.
+ 
+M3.5.0/03:00
+timestamp 1792893600
+M10.4.0/04:00
+GMT-02:00TMG,M3.5.0/03:00,M10.4.0/04:00
+mac:A8-29-DC-BA-71-CC
+mac:A8-29-DC-BA-53-0C
+2
+cap_mac:
+2
+groupinfo:{"role":"RE","key":"<redacted>","gid":"<redacted>"}
+device_type:RE
+[dnsproxy] Not FAP mode
+[ 6306] [init 751] init nds:0x0
+ 
+[ 6306] [main 931] init done, now do uloop_run
+ 
+leds: INFO: Event: power.on
+lookup ptr: Entry not found
+conn-indicator: INFO: -- running --
+conn-indicator: ERR: [connecting_cb] Connection to ubus failed: /var/run/ubus.sock: No such file or directory
+conn-indicator: ERR: [connecting_cb] Connection to ubus failed: /var/run/ubus.sock: No such file or directory
+wanDetect:wifi is setting
+conn-indicator: ERR: [connecting_cb] Connection to ubus failed: /var/run/ubus.sock: No such file or directory
+[ 6191(lan)] [smartip_init_dhcp_hook_socket 2991] create dhcp hook success
+ 
+[ 6191(lan)] [smartip_start_drop_dhcp_pkg 2848] start drop dhcp package failed!
+ 
+[ 6191(lan)] [smartip_start_drop_dhcp_pkg 2851] start select dhcp package!
+ 
+conn-indicator: ERR: [connecting_cb] Connection to ubus failed: /var/run/ubus.sock: No such file or directory
+conn-indicator: ERR: [connecting_cb] Connection to ubus failed: /var/run/ubus.sock: No such file or directory
+rax0      set:ApChannel=44
+[ 6191(lan)] [smartip_check_online 1241] open /tmp/is_online error...
+ 
+edcca set in profile
+rax0      set:mumimo=1
+setup_vif_ap vif:rax0 
+setup_vif_ap rax0 status is 1
+iwpriv rax0 set HideSSID=<redacted>
+rax0      set:HideSSID=<redacted>
+iwpriv rax0 set AuthMode=WPA2PSK
+rax0      set:AuthMode=WPA2PSK
+iwpriv rax0 set EncrypType=AES
+rax0      set:EncrypType=AES
+iwpriv rax0 set IEEE8021X=0
+rax0      set:IEEE8021X=0
+iwpriv rax0 set WPAPSK=<redacted>
+rax0      set:WPAPSK=<redacted>
+iwpriv rax0 set DefaultKeyID=<redacted>
+rax0      set:DefaultKeyID=<redacted>
+iwpriv rax0 set RekeyInterval=0
+rax0      set:RekeyInterval=0
+iwpriv rax0 set ACLClearAll=1
+rax0      set:ACLClearAll=1
+iwpriv rax0 set ftenable=0
+rax0      set:ftenable=0
+iwpriv rax0 set MaxStaNum=128
+iwpriv rax0 set SSID=<redacted>
+rax0      set:SSID=<redacted>
+iwpriv rax0 set SSID=<redacted>
+wanDetect:wifi is setting
+rax0      set:SSID=<redacted>
+iwpriv rax0 set NoForwarding=0
+rax0      set:NoForwarding=0
+edcca set in profile
+rax0      set:mumimo=1
+Line 349 : onboarding_boot = 0, band = 5g, channel = 0
+Line 349 : onboarding_boot = 0, band = 5g, channel = 0
+enable_ralinkwifi: DRIVERS(ralinkwifi): device(wifi1) vifs(rax0 rax1 rax2 rax3 rax4 rax5 apclix0) vif(rax1) disabled(1)
+enable_ralinkwifi: DRIVERS(ralinkwifi): device(wifi1) vifs(rax0 rax1 rax2 rax3 rax4 rax5 apclix0) vif(rax2) disabled(0)
+rax2 status 
+enable_ralinkwifi: ifconfig ifname(rax2) up 
+apsd: start apsd
+apsd_cfg_name: apsd_X50_3_0_0.json
+setup_vif_ap vif:rax2 
+setup_vif_ap rax2 status is 1
+iwpriv rax2 set HideSSID=<redacted>
+rax2      set:HideSSID=<redacted>
+iwpriv rax2 set AuthMode=WPA2PSKWPA3PSK
+rax2      set:AuthMode=WPA2PSKWPA3PSK
+iwpriv rax2 set EncrypType=AES
+rax2      set:EncrypType=AES
+iwpriv rax2 set WPAPSK=<redacted>
+rax2      set:WPAPSK=<redacted>
+iwpriv rax2 set RekeyInterval=0
+rax2      set:RekeyInterval=0
+conn-indicator: ERR: [connecting_cb] Connection to ubus failed: /var/run/ubus.sock: No such file or directory
+iwpriv rax2 set ACLClearAll=1
+rax2      set:ACLClearAll=1
+iwpriv rax2 set AccessPolicy=2
+rax2      set:AccessPolicy=2
+iwpriv rax2 set ftenable=0
+rax2      set:ftenable=0
+iwpriv rax2 set MaxStaNum=128
+===parental_control_avira=== no need to start
+iwpriv rax2 set SSID=<redacted>
+rax2      set:SSID=<redacted>
+iwpriv rax2 set SSID=<redacted>
+rax2      set:SSID=<redacted>
+iwpriv rax2 set NoForwarding=0
+[ 6191(lan)] [smartip_check_online 1241] open /tmp/is_online error...
+ 
+rax2      set:NoForwarding=0
+iwpriv rax2 set WscConfMode=7
+rax2      set:WscConfMode=7
+iwpriv rax2 set WscConfStatus=2
+rax2      set:WscConfStatus=2
+edcca set in profile
+rax0      set:mumimo=1
+enable_ralinkwifi brctl addif brname:br-lan vif(rax2)
+enable_ralinkwifi: DRIVERS(ralinkwifi): device(wifi1) vifs(rax0 rax1 rax2 rax3 rax4 rax5 apclix0 rax2) vif(rax3) disabled(1)
+enable_ralinkwifi: DRIVERS(ralinkwifi): device(wifi1) vifs(rax0 rax1 rax2 rax3 rax4 rax5 apclix0 rax2) vif(rax4) disabled(1)
+enable_ralinkwifi: DRIVERS(ralinkwifi): device(wifi1) vifs(rax0 rax1 rax2 rax3 rax4 rax5 apclix0 rax2) vif(rax5) disabled(1)
+enable_ralinkwifi: DRIVERS(ralinkwifi): device(wifi1) vifs(rax0 rax1 rax2 rax3 rax4 rax5 apclix0 rax2) vif(apclix0) disabled(0)
+already exist in known_hosts.
+apclix0 status 
+enable_ralinkwifi: ifconfig ifname(apclix0) up 
+setup_vif_sta ifname(apclix0) ssid(<redacted>) bssid(<redacted>) encrytion(psk2+ccmp) password(<redacted>)
+wanDetect:wifi is setting
+iwpriv apclix0 set ApCliEnable=0
+apclix0   set:ApCliEnable=0
+iwpriv apclix0 set ApCliMWDS=1
+apclix0   set:ApCliMWDS=1
+iwpriv apclix0 set ApCliAuthMode=WPA2PSK
+apclix0   set:ApCliAuthMode=WPA2PSK
+iwpriv apclix0 set ApCliEncrypType=AES
+apclix0   set:ApCliEncrypType=AES
+iwpriv apclix0 set IEEE8021X=0
+apclix0   set:IEEE8021X=0
+iwpriv apclix0 set ApCliWPAPSK=<redacted>
+apclix0   set:ApCliWPAPSK=<redacted>
+iwpriv apclix0 set ApCliSsid=<redacted>
+apclix0   set:ApCliSsid=<redacted>
+iwpriv apclix0 set ApCliBssid=<redacted>
+apclix0   set:ApCliBssid=<redacted>
+iwpriv apclix0 set ApCliEnable=1
+apclix0   set:ApCliEnable=1
+already exist in known_hosts.
+init auth_fail_count from uci
+edcca set in profile
+rax0      set:mumimo=1
+nothing to be done for post_ralinkwifi enable 
+whc (repacd): do __repacd_add_vlan_interfaces network:lan vlan id:1 backhual_iface:wifi
+conn-indicator: ERR: [connecting_cb] Connection to ubus failed: /var/run/ubus.sock: No such file or directory
+we start to reconfig here now
+[ 6191(lan)] [smartip_check_online 1241] open /tmp/is_online error...
+ 
+wanDetect:wifi is setting
+whc (repacd): 2g interfaces:ra0 apcli0 ra0 apcli0, 5g interfaces:rax0 apclix0 rax0 apclix0
+whc (repacd): plc interfaces:
+interface5g:rax0
+whc (repacd): rax0.1 does not exist, add it.
+interface5g:apclix0
+whc (repacd): apclix0.1 does not exist, add it.
+interface5g:rax0
+whc (repacd):                                                   rax0.1 already existed, do nothing.
+interface5g:apclix0
+conn-indicator: ERR: [connecting_cb] Connection to ubus failed: /var/run/ubus.sock: No such file or directory
+whc (repacd): br-lan            7fff.a829dcba530c       no              apclix0.1 already existed, do nothing.
+interface2g:ra0
+whc (repacd): ra0.1 does not exist, add it.
+interface2g:apcli0
+leds: INFO: Switch.on
+whc (repacd): apcli0.1 does not exist, add it.
+interface2g:ra0
+[ 6191(lan)] [smartip_check_online 1241] open /tmp/is_online error...
+ 
+whc (repacd):                                                   ra0.1 already existed, do nothing.
+interface2g:apcli0
+whc (repacd): br-lan            7fff.a829dcba530c       no              apcli0.1 already existed, do nothing.
+whc (repacd): do __repacd_add_vlan_interfaces network:lan vlan id:2 backhual_iface:wifi
+wanDetect:wifi is setting
+iptv.init start iptv
+iptv start_service 
+self iptv_port is other 
+===== TIPC have already enabled ====
+conn-indicator: ERR: [connecting_cb] Connection to ubus failed: /var/run/ubus.sock: No such file or directory
+whc (repacd): 2g interfaces:ra0 apcli0 ra0 apcli0, 5g interfaces:rax0 apclix0 rax0 apclix0
+whc (repacd): plc interfaces:
+interface5g:rax0
+tipc-server: INFO: -- running --
+tipc-server: INFO: server radar: port {18888,100,200} created
+tipc-server: INFO: mode is RE
+
+tipc-server: INFO: mode is RE
+
+tipc-server: INFO: mode is RE
+
+tipc-server: INFO: server RE: port {6000,100,100} created
+whc (repacd): rax0.2 does not exist, add it.
+wps: wpsd start
+interface5g:apclix0
+wps: ra2 enabled
+wps: rax2 enabled
+whc (repacd): apclix0.2 does not exist, add it.
+Switch Month from -1--1 to 2026-8
+Finding section month_traffic.20268 
+Finding section month_traffic.20267 
+[ 6191(lan)] [smartip_check_online 1241] open /tmp/is_online error...
+ 
+Success to find section month_traffic , Load success !
+Finding section month_traffic.20268 
+interface5g:rax0
+Finding section month_traffic.20267 
+Success to find section month_traffic , Load success !
+whc (repacd):                                                   rax0.2 already existed, do nothing.
+interface5g:apclix0
+===cloud-report=== no need to start
+whc (repacd):                                                   apclix0.2 already existed, do nothing.
+interface2g:ra0
+wanDetect:wifi is setting
+whc (repacd): ra0.2 does not exist, add it.
+only work in FAP
+interface2g:apcli0
+whc (repacd): apcli0.2 does not exist, add it.
+interface2g:ra0
+conn-indicator: ERR: [connecting_cb] Connection to ubus failed: /var/run/ubus.sock: No such file or directory
+whc (repacd):                                                   ra0.2 already existed, do nothing.
+interface2g:apcli0
+smart_home_schedule reload_service
+maclist_smart_home:
+#### no schedule client found in blacklist config ####
+whc (repacd):                                                   apcli0.2 already existed, do nothing.
+whc (repacd): do __repacd_del_vlan_interfaces network:wan vlan id:3 backhual_iface:wifi
+we start to reconfig here now
+tipc-server: INFO: FAP has been connected
+tipc-server: INFO: package head is (tipc_update)
+tipc-server: ERR: tipc_config_update
+[ 6191(lan)] [smartip_check_online 1241] open /tmp/is_online error...
+ 
+wanDetect:wifi is setting
+conn-indicator: ERR: [connecting_cb] Connection to ubus failed: /var/run/ubus.sock: No such file or directory
+matter_main.c: main: 891: INFO: matter start
+rm: can't remove '/tmp/chip_*': No such file or directory
+[ 6191(lan)] [smartip_check_online 1241] open /tmp/is_online error...
+ 
+[phylinkup] set port 2 link down up
+whc (repacd): 2g interfaces:ra0 apcli0 ra0 apcli0, 5g interfaces:rax0 apclix0 rax0 apclix0
+whc (repacd):  plc interfaces:
+whc (repacd): mode: != Managerd or rax0.3 does not exist.
+insmod tss kernel:Res=0
+remove tss ie:VATH=ra0
+remove tss ie:VATH=rai0
+tss: INFO: init done
+
+tss: INFO: tss module loop
+
+whc (repacd): mode:          Mode:Managed  Frequency:5.22 GHz  Access Point: <redacted>    != Managerd or apclix0.3 does not exist.
+conn-indicator: ERR: [connecting_cb] Connection to ubus failed: /var/run/ubus.sock: No such file or directory
+=============== app-dpi start ===============
+whc (repacd): mode: != Managerd or rax0.3 does not exist.
+matter_check_credentials false
+matter_utils.c: matter_ctrl_util_call_matter_lua_func: 1145: INFO: func : matter_check_and_prepare_credentials return fail!
+only work on FAP
+whc (repacd): mode:          Mode:Managed  Frequency:5.22 GHz  Access Point: <redacted>    != Managerd or apclix0.3 does not exist.
+whc (repacd): mode: != Managerd or ra0.3 does not exit.
+whc (repacd): mode:          Mode:Managed  Frequency:2.422 GHz  Access Point: <redacted>    != Managerd or apcli0.3 does not exit.
+QoS is NOT enable
+whc (repacd): mode: != Managerd or ra0.3 does not exit.
+whc (repacd): mode:          Mode:Managed  Frequency:2.422 GHz  Access Point: <redacted>    != Managerd or apcli0.3 does not exit.
+whc (repacd): do __repacd_del_vlan_interfaces network:iptv vlan id:3 backhual_iface:wifi
+[ 6191(lan)] [smartip_check_online 1241] open /tmp/is_online error...
+ 
+manager permission has been set, no need to set again
+client_mgmt: ERR: Fail to load uci package.
+=========> check cloud_config.device_status.username_md5
+cloud config username_md5 is already added...
+we start to reconfig here now
+[phylinkup] set port 1 link down up
+conn-indicator: ERR: [connecting_cb] Connection to ubus failed: /var/run/ubus.sock: No such file or directory
+whc (repacd): 2g interfaces:ra0 apcli0 ra0 apcli0, 5g interfaces:rax0 apclix0 rax0 apclix0
+whc (repacd):  plc interfaces:
+whc (repacd): mode: != Managerd or rax0.3 does not exist.
+whc (repacd): mode:          Mode:Managed  Frequency:5.22 GHz  Access Point: <redacted>    != Managerd or apclix0.3 does not exist.
+whc (repacd): mode: != Managerd or rax0.3 does not exist.
+firmware check crontab cmd: */15 * * * * lua /lib/sync-server/scripts/delete_record_later.lua
+[ 6191(lan)] [smartip_check_online 1241] open /tmp/is_online error...
+ 
+whc (repacd): mode:          Mode:Managed  Frequency:5.22 GHz  Access Point: <redacted>    != Managerd or apclix0.3 does not exist.
+whc (repacd): mode: != Managerd or ra0.3 does not exit.
+whc (repacd): mode:          Mode:Managed  Frequency:2.422 GHz  Access Point: <redacted>    != Managerd or apcli0.3 does not exit.
+disable flow control and 2.5G phy EEE
+whc (repacd): mode: != Managerd or ra0.3 does not exit.
+groupinfo:{"role":"RE","key":"<redacted>","gid":"<redacted>"}
+device_type:RE
+whc (repacd): mode:          Mode:Managed  Frequency:2.422 GHz  Access Point: <redacted>    != Managerd or apcli0.3 does not exit.
+[dnsmasq] start: not Router FAP mode, do not start
+[eco_mode_op] command: del_schedule_for_power_mode, param1:[]
+[eco_mode_op] command: set_power_mode, param1:[0]
+set_power_mode type: [] -> [0]
+[phylinkup] set port 0 link down up
+ra0       set:thermal_protect_duty_info=0
+ra0       set:thermal_protect_duty_info=1
+[eco_mode_op] command: del_schedule_for_eco_time, param1:[]
+[eco_led_time] command: del_schedule
+conn-indicator: ERR: [connecting_cb] Connection to ubus failed: /var/run/ubus.sock: No such file or directory
+whc (repacd): do __repacd_del_vlan_interfaces network:lan vlan id:1 backhual_iface:plc
+whc (repacd): 2g interfaces:, 5g interfaces:
+whc (repacd):  plc interfaces:
+whc (repacd): do __repacd_del_vlan_interfaces network:lan vlan id:2 backhual_iface:plc
+[ 6191(lan)] [smartip_check_online 1241] open /tmp/is_online error...
+ 
+whc (repacd): 2g interfaces:, 5g interfaces:
+whc (repacd):  plc interfaces:
+whc (repacd): do __repacd_del_vlan_interfaces network:wan vlan id:3 backhual_iface:plc
+whc (repacd): 2g interfaces:, 5g interfaces:
+whc (repacd):  plc interfaces:
+whc (repacd): do __repacd_del_vlan_interfaces network:iptv vlan id:3 backhual_iface:plc
+whc (repacd): 2g interfaces:, 5g interfaces:
+whc (repacd):  plc interfaces:
+whc (repacd): set wifi done flag
+whc (repacd): reload get whc_wifi_config_lock
+whc (repacd): unlock whc_wifi_config_lock
+whc (repacd): reload unlock whc_wifi_config_lock
+repacd reload nothing changed for iptv
+guest-eth: Start to set guest vlan
+guest-eth: Ignore system signal
+guest-eth: Lock vlan.lock
+guest-eth: set guest vlan: vlan_id=591, switch_ports=0t 2t 1t 0t, eth_ifaces=eth3 eth2 eth1
+switch_mt7530_recovery reg:2104 value:0x442470
+switch_mt7530_recovery set reg:2104 value:0x442000
+switch_mt7530_recovery reg:2204 value:0x422470
+switch_mt7530_recovery set reg:2204 value:0x422000
+### enable all ipv6 eth3 eth2 eth1
+conn-indicator: NOTE: BINDING state: -1 -> 3
+conn-indicator: INFO: <30000307> Invoke led: conn[2]
+leds: INFO: Event: conn.ap-lost
+guest-eth: add eth if eth3.591
+Value at 0x11D00000 (0x7f94177000): 0x18001A30
+Written 0x18001A30; Readback 0x18001A30
+Value at 0x11E20000 (0x7f9010d000): 0x38E00E00
+Written 0x38E01E00; Readback 0x38E01E00
+leds: INFO: Event: init.done
+conn-indicator: NOTE: Mode changed: Unknown -> Router
+conn-indicator: NOTE: Role changed: Unknown -> RE
+conn-indicator: NOTE: Network type: Unknown -> RE
+conn-indicator: WARN: ci online time:1786683084
+
+conn-indicator: NOTE: FAP FOUND, reset csatimeout(0 second) for 798x
+conn-indicator: NOTE: Connectivity changed: FAP.LOST(0x7) -> ONLINE(0x0)
+guest-eth: add eth if eth2.591
+apclix0   set:csatimeout=0
+conn-indicator: ERR: Ubus object sync not found
+guest-eth: add eth if eth1.591
+mac:A8-29-DC-BA-71-CC
+role:AP
+mac:A8-29-DC-BA-53-0C
+role:RE
+update fap: a8:29:dc:xx:xx:01
+[https-dns-proxy] start_service.
+start hybrid_center
+01_vlan_state else: select p4: 
+01_vlan_state else: select p5: 
+update eth0 eth1 port guest vlan_id br-lan
+NOT FAP or TRE, hybrid_center exit.
+hotplug config vlan ==============
+iptv.init reload iptv
+conn-indicator: INFO: tipc link status response 2
+apsd: stop apsd
+iptv.init start iptv
+iptv start_service 
+apsd: start apsd
+apsd_cfg_name: apsd_X50_3_0_0.json
+self iptv_port is other 
+client_isolate: client isolate is disable
+client_isolate: flush isolate list
+/etc/rc.common 0 true
+[AWN:W][set_backhaul_sta_dev_mtk:2475]: cmd:echo 'apcli0' > /proc/net/statistics/sta_dev_name
+leds: INFO: Event: wifi2g.on
+[AWN:W][awnd_write_rt_info:3714]: link_state:1, eth_link_state:0, buf:ubus send link_state '{ "LINK_WIFI_2G": 1, "LINK_WIFI_5G": 0, "LINK_WIFI_5G_2": 0, "LINK_WIFI_6G": 0, "LINK_WIFI_6G_2": 0, "LINK_PLC": 0, "LINK_ETH": 0 }'
+[AWN:W][awnd_update_tpie:2897]: band:2g     bssid:<redacted>, rssi:67  , channel:3  , uplinkMask:0    , uplinkrate:0    , pathRate:0    
+[AWN:E][update_wifi_tpie_mtk:1297]: awnd_update_wifi_tpie awnd_net_type:0  ,awnd_level:0 , wait:0, lanip:0, dns:0, 
+                 server_detected:0, server_touch_time:0 awnd_mac:00:00:00:00:00:00 len=0
+[AWN:E][update_wifi_tpie_mtk:1303]: label: <redacted>, uplinkMask:101, uplinkRate:0/0/0
+*****/tmp/ipv6_firewall/op_rule_id file not found, create it.*****
+[AWN:W][set_backhaul_sta_dev_mtk:2475]: cmd:echo 'apcli0:apclix0' > /proc/net/statistics/sta_dev_name
+leds: INFO: Event: wifi5g.on
+[AWN:W][awnd_write_rt_info:3714]: link_state:3, eth_link_state:0, buf:ubus send link_state '{ "LINK_WIFI_2G": 1, "LINK_WIFI_5G": 1, "LINK_WIFI_5G_2": 0, "LINK_WIFI_6G": 0, "LINK_WIFI_6G_2": 0, "LINK_PLC": 0, "LINK_ETH": 0 }'
+[AWN:W][awnd_update_tpie:2897]: band:2g     bssid:<redacted>, rssi:67  , channel:3  , uplinkMask:0    , uplinkrate:0    , pathRate:0    
+[AWN:W][awnd_update_tpie:2897]: band:5g     bssid:<redacted> rssi:68  , channel:44 , uplinkMask:0    , uplinkrate:0    , pathRate:0    
+[AWN:E][update_wifi_tpie_mtk:1297]: awnd_update_wifi_tpie awnd_net_type:0  ,awnd_level:0 , wait:0, lanip:0, dns:0, 
+                 server_detected:0, server_touch_time:0 awnd_mac:00:00:00:00:00:00 len=0
+[AWN:E][update_wifi_tpie_mtk:1303]: label: <redacted>, uplinkMask:301, uplinkRate:0/0/0
+[AWN:W][awnd_update_tpie:2897]: band:2g     bssid:<redacted>, rssi:67  , channel:3  , uplinkMask:0    , uplinkrate:0    , pathRate:0    
+[AWN:W][awnd_update_tpie:2897]: band:5g     bssid:<redacted> rssi:68  , channel:44 , uplinkMask:0    , uplinkrate:0    , pathRate:0    
+[AWN:E][update_wifi_tpie_mtk:1276]: update pAwndNetInfo oui to 0x03192 with ret : 0.
+[AWN:E][update_wifi_tpie_mtk:1297]: awnd_update_wifi_tpie awnd_net_type:0  ,awnd_level:1 , wait:0, lanip:c0a82301, dns:3f57fefd, 
+                 server_detected:0, server_touch_time:0 awnd_mac:a8:29:dc:xx:xx:01 len=58
+[AWN:E][update_wifi_tpie_mtk:1303]: label: <redacted>, uplinkMask:301, uplinkRate:0/0/71
+conn-indicator: NOTE: AP MAC changed: (null) -> a8:29:dc:xx:xx:01
+conn-indicator: NOTE: Network type: RE -> FAP
+conn-indicator: INFO: <31310300> Invoke led: conn[0]
+NO necessary to load ipv6 firewall, return.
+leds: INFO: Event: conn.online
+whc (repacd): reload get whc_wifi_config_lock
+whc (repacd): reload unlock whc_wifi_config_lock
+[ 6191(lan)] [handle_link_state_event 2946] smartipd handle link state event.
+ 
+[ 6191(lan)] [handle_link_state_event 3077] new_conn_status:1, conn_status:0, work_role = 2
+ 
+repacd reload nothing changed for iptv
+=== change FAP, stop tmpcd ===
+[ 6191(lan)] [smartip_delete_lanip 1077] stop domain_login
+ 
+[ 6191(lan)] [smartip_delete_lanip 1082] !!ip addr del!! ip addr del 192.168.35.1 dev br-lan
+ 
+[ 6191(lan)] [smartip_delete_lanip 1090] route del default dev br-lan
+ 
+[ 6191(lan)] [smartip_restart_process 462] smartipd restart udhcpc
+ 
+hyctl setfloodlimit br-lan 40000
+[ 6191(lan)] [smartip_start_process 431] start udhcpc
+ 
+register save tmp config access_client
+register save tmp config message_center
+register save tmp config iot_device_stats
+we start to reconfig here now
+[AWN:W][awnd_scan_create_processes:5484]: uloop_process_add pid:12449, scanBandMask:3
+ra0       set:SiteSurvey=1
+[ 6191(lan)] [smartip_get_cap_mac 1367] cap_mac:  -> a8:29:dc:xx:xx:01
+ 
+mac:A8-29-DC-BA-71-CC
+mac:A8-29-DC-BA-53-0C
+2
+cap_mac:A8-29-DC-BA-71-CC
+2
+[ 6191(lan)] [smartip_get_cap_mac 1383] cap_mac was changed: a8:29:dc:xx:xx:01
+ 
+01_vlan_state else: select p4: 
+01_vlan_state else: select p5: 
+update eth0 eth1 port guest vlan_id br-lan
+hotplug config vlan ==============
+[ 6191(lan)] [handle_link_state_event 2946] smartipd handle link state event.
+ 
+we start to reconfig here now
+conn-indicator: INFO: <31310300> Invoke led: conn[2]
+leds: INFO: Event: conn.ap-lost
+conn-indicator: NOTE: FAP LOST, set csatimeout(30 seconds) for 798x
+conn-indicator: NOTE: Connectivity changed: ONLINE(0x0) -> FAP.LOST(0x4)
+apclix0   set:csatimeout=30
+iptv.init reload iptv
+iptv.init start iptv
+iptv start_service 
+self iptv_port is other 
+[ 6191(lan)] [smartip_ibus_handle_event 3129] event action = 2
+ 
+[ 6191(lan)] [smartip_ibus_handle_wifi_event 2701] smartipd handle wifi event:10
+ 
+[ 6191(lan)] [smartip_ibus_handle_wifi_event 2787] AP -> RE
+ 
+whc (repacd): reload get whc_wifi_config_lock
+whc (repacd): reload unlock whc_wifi_config_lock
+parental-control_avira: stop the avira homecare
+repacd reload nothing changed for iptv
+### avirawatchdog stop ###
+### aviraserviceselector stop ###
+[aviraSentinelFull]: stop IS_AVIRA_SENTINEL_FULL_RESTART: 0 
+[aviraSentinelLite]: stop IS_AVIRA_SENTINEL_LITE_RESTART: 0 
+first update init timeout event: Resource temporarily unavailable
+conn-indicator: ERR: Ubus object sync not found
+[aviraSentinelFull]: stop IS_AVIRA_SENTINEL_FULL_RESTART: 0 
+exiting parental_control
+exiting family_time
+[aviraSentinelLite]: stop IS_AVIRA_SENTINEL_LITE_RESTART: 0 
+[ 6191(lan)] [smartip_ibus_handle_event 3129] event action = 1
+ 
+[ 6191(lan)] [smartip_handle_detect_success 1424] detect sucess to update lanIp and write dns file
+
+ 
+[ 6191(lan)] [smartip_notify_hybrid_center_lan_update 1913] Notify hybrid_center the lan ip changed.
+ 
+[ 6191(lan)] [smartip_notify_lan_update 1863] Notify the lan ip changed.
+ 
+[ 6191(lan)] [smartip_update_lanip 672] config IP:  ifconfig br-lan 192.168.35.250 netmask 255.255.255.0
+ 
+[ 6191(lan)] [smartip_update_lanip 684] route del default dev br-lan
+ 
+[ 6191(lan)] [smartip_update_lanip 691] route add default gw 192.168.35.1
+ 
+safesearch_config clear
+paid mode but not profile client(or free), stop classifier
+################### app-classifier stop ################### 
+safesearch_config lock clear
+[PCTL_DEBUG]: fw_del_web_filter_all start
+safesearch_update clear
+safesearch_translate_fast clear
+safesearch_update lock clear
+safesearch_block_dot clear
+safesearch_block_dot lock clear
+safesearch_block_dns_server_tls clear
+safesearch_dns_server_tbl lock clear
+we start to reconfig here now
+[hotplug]: change to role RE, app-classifier stop
+################### app-classifier stop ################### 
+[hotplug]: change to role RE, app-dpi stop
+=============== app-dpi stop ===============
+kmod: module is not loaded
+==== auto upgrade is disbale. do nothing ====
+guest in hotplug start to reload @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+guest reload gw mac : a8:29:dc:xx:xx:01
+[ 6191(lan)] [smartip_update_lanip 703] /etc/init.d/guest_eth reload gw 192.168.35.1
+ 
+[ 6191(lan)] [smartip_update_lanip 709] restart miniupnpd
+ 
+[ 6191(lan)] [smartip_update_lanip 717] recovery lan static route.
+ 
+[14929(lan)] [smartip_call_hotplug_ip 2668] Send Message -- TYPE:lan, EVENT:UPDATE
+ 
+guest-eth: Start to set guest vlan
+guest-eth: Ignore system signal
+guest-eth: Lock vlan.lock
+conn-indicator: INFO: <31310304> Invoke led: conn[0]
+leds: INFO: Event: conn.online
+conn-indicator: WARN: ci online time:1786683092
+
+conn-indicator: NOTE: FAP FOUND, reset csatimeout(0 second) for 798x
+conn-indicator: NOTE: Connectivity changed: FAP.LOST(0x4) -> ONLINE(0x0)
+conn-indicator: INFO: Request inet
+conn-indicator: INFO: request internet status
+conn-indicator: INFO: request internet status response 2
+conn-indicator: ERR: Ubus object sync not found
+guest-eth: set guest vlan: vlan_id=591, switch_ports=0t 2t 1t 0t, eth_ifaces=eth3 eth2 eth1
+[AWN:E][wait_scan_finish:1492]: wireless is still scanning
+rax0      set:SiteSurvey=1
+apclix0   set:csatimeout=0
+domainlogin change to 192.168.35.250/255.255.255.0 
+[stubby] start_service.
+========= MODE: cloud_awn_update begin ==========
+mode: RE
+mac:A8-29-DC-BA-71-CC
+role:AP
+mac:A8-29-DC-BA-53-0C
+role:RE
+update fap: a8:29:dc:xx:xx:01
+[AWN:E][update_preconfig_hook_lan:607]: update_preconfig_hook_lan open file:/proc/preconfig_hook/preconfig_hook_lan error
+[ 6191(lan)] [smartip_update_lanip 729] restart domain_login
+ 
+[ 6191(lan)] [smartip_update_lanip 733] /etc/init.d/uhttpd restart
+ 
+reload fw
+tipc_tfstats: INFO: TIPC tfstats service initlized
+hybrid_center reload_service
+start hybrid_center
+exiting ipv6_firewall
+Ipv6 Firewall config trigger stop!
+NOT FAP or TRE, hybrid_center exit.
+==== work mode changed! clear telemetry backup data ====
+qos_v2 stop 
+update old conf access_client 
+update old conf message_center 
+Error running command
+update old conf iot_device_stats 
+kmod: module is not loaded
+[client_speed_limit] csl_stop
+[eco_mode_op] command: _is_fap, param1:[]
+[AWN:E][get_scan_result_mtk:2179]: ra0    idx:0, ssid:                                , bssid:<redacted>, rssi:61  , channel:3  , uplinkMask:0    , uplinkrate:0    , pathRate:0    
+[AWN:E][get_scan_result_mtk:2189]: awnd_net_type:0  ,awnd_level:0 , awnd_weight:0, wait:0, lanip:c0a82301, dns:3f57fefd             server_detected:0, server_touch_time:0, awnd_mac:a8:29:dc:xx:xx:01
+[AWN:E][get_scan_result_mtk:2179]: rax0   idx:0, ssid:                                , bssid:<redacted> rssi:60  , channel:44 , uplinkMask:0    , uplinkrate:0    , pathRate:0    
+[AWN:E][get_scan_result_mtk:2189]: awnd_net_type:0  ,awnd_level:0 , awnd_weight:0, wait:0, lanip:c0a82301, dns:3f57fefd             server_detected:0, server_touch_time:0, awnd_mac:a8:29:dc:xx:xx:01
+tc class del dev br-wan parent 1:1 classid 1:13
+[AWN:W][awnd_scan_handle_rootap:6302]: Restore triggered reconnection - verifying rootAP configuration from saved state
+[AWN:W][awnd_scan_handle_rootap:6498]: Set bssid <redacted> for band 2g
+tc class del dev br-lan parent 2:2 classid 2:23
+[AWN:W][awnd_scan_handle_rootap:6498]: Set bssid <redacted> for band 5g
+[WSCHD][ERROR] Fail to load uci pkg /tmp/wifi_schedule_tmp.(RE ignores tmp)
+apcli0    set:ApCliEnable=1
+apclix0   set:ApCliEnable=1
+wifi_update action(reroam) device(  ) vap()
+wifi_reroaming:  
+tc qdisc add dev br-wan root handle 1: htb default 101
+tc class add dev br-wan parent 1: classid 1:1 htb rate 1024000kbit ceil 1024000kbit burst 1281600 cburst 1281600 quantum 1500
+tc class add dev br-wan parent 1:1 classid 1:101 htb rate 1024000kbit ceil 1024000kbit burst 1281600 cburst 1281600 quantum 1500 prio 3
+tc qdisc add dev br-wan parent 1:101 handle 101: sfq perturb 10
+tc qdisc add dev br-lan root handle 2: htb default 202
+tc class add dev br-lan parent 2: classid 2:2 htb rate 1024000kbit ceil 1024000kbit burst 1281600 cburst 1281600 quantum 1500
+tc class add dev br-lan parent 2:2 classid 2:202 htb rate 1024000kbit ceil 1024000kbit burst 1281600 cburst 1281600 quantum 1500 prio 3
+tc qdisc add dev br-lan parent 2:202 handle 202: sfq perturb 10
+generate_wifi_vap_list result: ra2 rax2 ra4 rax4 ra0 rax0 apcli0 apclix0 ra1 rax1 ra3 rax3 ra5 rax5
+firmware check crontab cmd: */5 * * * * lua /usr/lib/lua/luci/tools/uhttpd_process_check.lua
+vaplist:
+devlist:
+up_all_vap DEVICES(wifi0 wifi1)
+device_id <redacted>
+device_type RE
+Switch Month from 2026-8 to 2026-11
+Finding section month_traffic.202611 
+Finding section month_traffic.202610 
+Success to find section month_traffic , Load success !
+Finding section month_traffic.202611 
+Finding section month_traffic.202610 
+Success to find section month_traffic , Load success !
+--------->exiting qos
+[AWN:W][awnd_update_tpie:2897]: band:2g     bssid:<redacted>, rssi:67  , channel:3  , uplinkMask:0    , uplinkrate:0    , pathRate:0    
+[AWN:E][update_wifi_tpie_mtk:1276]: update pAwndNetInfo oui to 0x03192 with ret : 0.
+[AWN:E][update_wifi_tpie_mtk:1297]: awnd_update_wifi_tpie awnd_net_type:0  ,awnd_level:1 , wait:0, lanip:c0a82301, dns:3f57fefd, 
+                 server_detected:0, server_touch_time:0 awnd_mac:a8:29:dc:xx:xx:01 len=58
+[AWN:E][update_wifi_tpie_mtk:1303]: label: <redacted>, uplinkMask:101, uplinkRate:0/0/0
+[AWN:W][awnd_update_tpie:2897]: band:2g     bssid:<redacted>, rssi:67  , channel:3  , uplinkMask:0    , uplinkrate:0    , pathRate:0    
+[AWN:W][awnd_update_tpie:2897]: band:5g     bssid:<redacted> rssi:68  , channel:44 , uplinkMask:0    , uplinkrate:0    , pathRate:0    
+[AWN:E][update_wifi_tpie_mtk:1276]: update pAwndNetInfo oui to 0x03192 with ret : 0.
+[AWN:E][update_wifi_tpie_mtk:1297]: awnd_update_wifi_tpie awnd_net_type:0  ,awnd_level:1 , wait:0, lanip:c0a82301, dns:3f57fefd, 
+                 server_detected:0, server_touch_time:0 awnd_mac:a8:29:dc:xx:xx:01 len=58
+[AWN:E][update_wifi_tpie_mtk:1303]: label: <redacted>, uplinkMask:301, uplinkRate:0/0/0
+[AWN:W][awnd_update_tpie:2897]: band:2g     bssid:<redacted>, rssi:67  , channel:3  , uplinkMask:0    , uplinkrate:0    , pathRate:0    
+[AWN:W][awnd_update_tpie:2897]: band:5g     bssid:<redacted> rssi:68  , channel:44 , uplinkMask:0    , uplinkrate:0    , pathRate:0    
+[AWN:E][update_wifi_tpie_mtk:1276]: update pAwndNetInfo oui to 0x03192 with ret : 0.
+[AWN:E][update_wifi_tpie_mtk:1297]: awnd_update_wifi_tpie awnd_net_type:0  ,awnd_level:1 , wait:0, lanip:c0a82301, dns:3f57fefd, 
+                 server_detected:0, server_touch_time:0 awnd_mac:a8:29:dc:xx:xx:01 len=58
+[AWN:E][update_wifi_tpie_mtk:1303]: label: <redacted>, uplinkMask:301, uplinkRate:0/0/71
+ra2       set:SendProxyL2UF=
+ra0       set:SendProxyL2UF=
+rax2      set:SendProxyL2UF=
+rax0      set:SendProxyL2UF=
+/lib/sync-server/scripts/probe:394:     8019BF955E0BAD9088A1B14FFFBEB6AC25FE7E07 is NOT in devlist
+/lib/sync-server/scripts/probe:394:     8019618BD363202703BA0DD3E0D3810D25FE2DBA is NOT in devlist
+receive cloud_hello!!!
+ddns is not enabled no need to check status
+upload bind: Only AP do the bind!
+req.method:     getDeviceUserInfo
+re:     0
+=== unbind_deviceWithFeatureInfo begin. ===
+=== clean all domains before unbind device start===
+req.method:     getDomainList
+re:     0
+=== clean all domains before unbind device end===
+req.method:     unbindDeviceWithFeatureInfo
+/lib/sync-server/scripts/probe:1492:    online_inform_list["8019BF955E0BAD9088A1B14FFFBEB6AC25FE7E07","8019618BD363202703BA0DD3E0D3810D25FE2DBA"]
+tss: INFO: handle probe info get key:new_offline_devId
+tss: INFO: event: going to add device!
+send msg to nrd{"new_offline_devId":[],"new_online_devId":["8019BF955E0BAD9088A1B14FFFBEB6AC25FE7E07","8019618BD363202703BA0DD3E0D3810D25FE2DBA"]}
+send msg to awn, online/offline dev id = {"new_offline_devId":[],"new_online_devId":["8019BF955E0BAD9088A1B14FFFBEB6AC25FE7E07","8019618BD363202703BA0DD3E0D3810D25FE2DBA"]}
+send msg to tss{"new_offline_devId":[],"new_online_devId":["8019BF955E0BAD9088A1B14FFFBEB6AC25FE7E07","8019618BD363202703BA0DD3E0D3810D25FE2DBA"]}
+tss: INFO: catch online event, work mode = 2
+tss: INFO: event: going to add device!
+tss: INFO: catch online event, work mode = 2
+tss: INFO: handle probe info get key:new_offline_devId
+tss: INFO: event: going to add device!
+tss: INFO: catch online event, work mode = 2
+tss: INFO: event: going to add device!
+tss: INFO: catch online event, work mode = 2
+[AWN:E][update_preconfig_hook_lan:607]: update_preconfig_hook_lan open file:/proc/preconfig_hook/preconfig_hook_lan error
+====> FAP changes it's ip, notify Hue
+re:     0
+saveconfig() begin
+saveconfig() loc = device-config
+fileToXml
+saveconfig() end
+saveconfig() begin
+saveconfig() loc = device-config
+fileToXml
+saveconfig() begin
+saveconfig() loc is nil
+fileToXml
+fileToXml
+saveconfig() end
+=== unbind_deviceWithFeatureInfo end. ===
+=== INFO: account bind to cloud now ===
+req.method:     bindDevice
+reset tmp config
+leds: INFO: Switch.on
+saveconfig() end
+re:     0
+saveconfig() begin
+saveconfig() loc = device-config
+fileToXml
+/usr/sbin/cloud_getDevToken:72: create lock_file(/var/run/cloud_token_homecare.lock) for the first time...
+/usr/sbin/cloud_getDevToken:83: lock /var/run/cloud_token_homecare.lock successfully
+req.method:     getNewDeviceTokenWithServices
+saveconfig() end
+RE bind cloud, clear account
+saveconfig() begin
+saveconfig() loc = device-config
+fileToXml
+saveconfig() begin
+saveconfig() loc is nil
+fileToXml
+################### app-classifier stop ################### 
+[AWN:W][awnd_scan_create_processes:5484]: uloop_process_add pid:17282, scanBandMask:3
+[AWN:E][do_scan_fast_mtk:1656]: begain fast scan
+re:     0
+ra0       set:SiteSurvey=1
+/usr/sbin/cloud_getDevToken:125:        Add Crontab to delete expired token: 25 18 23 11 * /lib/deleteToken.sh /tmp/cloud/cloud_token_homecare nbu.homecare-cloud
+only work in FAP
+only work on FAP
+=============== app-dpi stop ===============
+saveconfig() begin
+saveconfig() loc = user-config
+fileToXml
+saveconfig() end
+req.method:     saveDeviceFeatureInfo
+fileToXml
+saveconfig() end
+===parental_control_avira=== no need to start
+saveconfig() end
+re:     0
+saveconfig() begin
+saveconfig() loc = device-config
+fileToXml
+cloud_upload_unbind is doing, don't do again
+paid mode but not profile client(or free), stop classifier
+################### app-classifier stop ################### 
+[PCTL_DEBUG]: fw_del_web_filter_all start
+saveconfig() end
+========== CLOUD: RE clear feature info success =========
+get-device-status form HomeCareCloud  request:  {"deviceId":"8019618BD363202703BA0DD3E0D3810D25FE2DBA"}
+get-device-status form HomeCareCloud response:  {"errorCode":0,"code":null,"message":"Everything OK","result":{"deviceId":"8019618BD363202703BA0DD3E0D3810D25FE2DBA","state":-1,"aviraServiceStatus":"available","thirdPartyStatus":"available","features":{"aviraSafethings":"on","aviraAucSecure":"off","aviraLibAuc":"off","fSecure":"off"},"nextQueryInterval":909515086}}
+Next Query time: 909516s, corresponding time: 2026-12-03 07:04:08. Add Crontab: 4 7 3 12 2026 /usr/sbin/report_get_device_status
+subscription_decoupling:{"security":"service.shutdown","parentalControl":"service.shutdown","thirdPartyStatus":"available","features":{"aviraAucSecure":"off","aviraSafethings":"on","aviraLibAuc":"off"}}
+passthrough:    null
+parentalControl state:  free
+transfer_security_config secure_split_support
+saveconfig() begin
+saveconfig() loc = user-config
+fileToXml
+saveconfig() end
+sync probe ......
+### avirawatchdog stop ###
+### aviraserviceselector stop ###
+[aviraSentinelFull]: stop IS_AVIRA_SENTINEL_FULL_RESTART: 0 
+[aviraSentinelLite]: stop IS_AVIRA_SENTINEL_LITE_RESTART: 0 
+################### app-classifier stop ################### 
+only work in FAP
+only work on FAP
+=============== app-dpi stop ===============
+saveconfig() begin
+saveconfig() loc = user-config
+fileToXml
+/lib/sync-server/scripts/probe:1453:    not in record, update later, do nothing 8019BF955E0BAD9088A1B14FFFBEB6AC25FE7E07
+saveconfig() end
+===parental_control_avira=== no need to start
+paid mode but not profile client(or free), stop classifier
+################### app-classifier stop ################### 
+[PCTL_DEBUG]: fw_del_web_filter_all start
+### aviraservicemaster start, payment:free service: pctl_payment:free sec_payment:free###
+cloud_upload request:   {"componentList":[{"id":"ASTMobileSDK","version":"1"},{"id":"monthlyReport","version":"1"},{"id":"insights","version":"1"},{"id":"antivirus","version":"1"},{"id":"messaging","version":"1"}],"deviceId":"8019618BD363202703BA0DD3E0D3810D25FE2DBA"}
+cloud_upload response:
+family_devices:
+
+Remove all devices failed
+saveconfig() begin
+saveconfig() loc = user-config
+fileToXml
+saveconfig() end
+sync probe ......
+### aviraservicemaster start, payment:free service: pctl_payment:free sec_payment:free###
+===parental_control_avira=== no need to start
+false 0
+paid mode but not profile client(or free), stop classifier
+################### app-classifier stop ################### 
+[PCTL_DEBUG]: fw_del_web_filter_all start
+[AWN:E][wait_scan_finish:1492]: wireless is still scanning
+rax0      set:SiteSurvey=1
+
+Login timed out X55 login: [AWN:E][get_scan_result_mtk:2179]: ra0    idx:0, ssid:                                , bssid:<redacted>, rssi:66  , channel:3  , uplinkMask:0    , uplinkrate:0    , pathRate:0    
+[AWN:E][get_scan_result_mtk:2189]: awnd_net_type:0  ,awnd_level:0 , awnd_weight:0, wait:0, lanip:c0a82301, dns:3f57fefd             server_detected:0, server_touch_time:0, awnd_mac:a8:29:dc:xx:xx:01
+[AWN:E][get_scan_result_mtk:2179]: rax0   idx:0, ssid:                                , bssid:<redacted> rssi:59  , channel:44 , uplinkMask:0    , uplinkrate:0    , pathRate:0    
+[AWN:E][get_scan_result_mtk:2189]: awnd_net_type:0  ,awnd_level:0 , awnd_weight:0, wait:0, lanip:c0a82301, dns:3f57fefd             server_detected:0, server_touch_time:0, awnd_mac:a8:29:dc:xx:xx:01
+===inner_program_mgmt
+I'm iot master: false
+=== /etc/init.d/iot-wifi-center === mgmt false
+stop iot-wifi-center
+stop iot-netdev
+stop iot-tpra
+stop iot-tapo
+stop philips-hue
+stop matter
+sendto: Connection refused
+pid 9306 send 2004 error, errno is 111
+rm: can't remove '/tmp/chip_*': No such file or directory
+matter_main.c: main: 953: INFO: matter finished
